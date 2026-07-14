@@ -114,11 +114,15 @@
   .kt-link.danger{color:var(--red); border-color:var(--red)}
   .kt-status{margin-left:auto; font-size:11px; letter-spacing:.06em}
 
+  /* PDF出力時:入力欄をただの文字に差し替えて描画する(html2canvasの文字切れ対策) */
   .kt-sheet.printing{background:#fff}
   .kt-sheet.printing .kt-scroll{overflow:visible}
-  .kt-sheet.printing .kt-del{visibility:hidden}
-  .kt-sheet.printing input[type=date]{border-color:transparent; background:transparent}
-  .kt-sheet.printing .kt-note{color:var(--ink)}
+  .kt-sheet.printing .kt-item{min-height:46px}
+  .kt-site-s{display:block; width:100%; margin:6px 0 12px; padding:0 0 8px; font-size:28px; font-weight:900; line-height:1.4; border-bottom:2px solid var(--ink); color:var(--ink); white-space:nowrap; overflow:hidden}
+  .kt-date-s{font-family:'Roboto Mono',monospace; font-size:14px; font-weight:500; color:var(--ink); padding:0 2px}
+  .kt-itemname-s{font-size:14px; font-weight:700; color:var(--ink); line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .kt-note-s{font-size:10px; line-height:1.5; color:var(--ink); word-break:break-all}
+  .kt-madeon{text-align:right; font-family:'Roboto Mono',monospace; font-size:10px; color:var(--ink2); padding:6px 2px 0}
 
   @media (max-width:640px){
     .kt{padding:14px 10px 30px}
@@ -185,6 +189,7 @@ function KouteiHyou() {
   const [draft, setDraft] = useState({ name:"", start:defaultStart, end:addDays(defaultStart,4), color:PALETTE[4].v, note:"" });
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState("");
+  const [printing, setPrinting] = useState(false);
   const sheetRef = useRef(null);
   const loaded = useRef(false);
   const fileRef = useRef(null);
@@ -294,6 +299,8 @@ function KouteiHyou() {
   const exportPDF = async () => {
     if (!items.length || busy) return;
     setBusy("PDFを作成中");
+    setPrinting(true);
+    await new Promise(r => setTimeout(r, 120)); // 文字への差し替えを待つ
     const node = sheetRef.current;
     node.classList.add("printing");
     try {
@@ -317,6 +324,7 @@ function KouteiHyou() {
       window.print();
     } finally {
       node.classList.remove("printing");
+      setPrinting(false);
     }
   };
 
@@ -355,11 +363,23 @@ function KouteiHyou() {
       <div className="kt-sheet" ref={sheetRef}>
         <header className="kt-head">
           <div className="kt-eyebrow">工 程 表 <span>SITE SCHEDULE</span></div>
-          <input className="kt-site" value={site} onChange={e => setSite(e.target.value)} placeholder="現場名称を入力" />
+          {printing
+            ? <div className="kt-site-s">{site.trim() || "現場名称"}</div>
+            : <input className="kt-site" value={site} onChange={e => setSite(e.target.value)} placeholder="現場名称を入力" />}
           <div className="kt-period">
-            <label>着工<input type="date" value={start} onChange={e => setStart(e.target.value)} /></label>
-            <span className="kt-tilde">〜</span>
-            <label>竣工<input type="date" value={end} onChange={e => setEnd(e.target.value)} /></label>
+            {printing ? (
+              <React.Fragment>
+                <span>着工</span><span className="kt-date-s">{start}</span>
+                <span className="kt-tilde">〜</span>
+                <span>竣工</span><span className="kt-date-s">{end}</span>
+              </React.Fragment>
+            ) : (
+              <React.Fragment>
+                <label>着工<input type="date" value={start} onChange={e => setStart(e.target.value)} /></label>
+                <span className="kt-tilde">〜</span>
+                <label>竣工<input type="date" value={end} onChange={e => setEnd(e.target.value)} /></label>
+              </React.Fragment>
+            )}
             <span className="kt-total">{days.length ? "工期 " + days.length + "日" : "期間が正しくありません"}</span>
           </div>
         </header>
@@ -393,19 +413,27 @@ function KouteiHyou() {
                   <div className={"kt-cell-head" + (showNote ? " has-note" : "")}>
                     <button type="button" className="kt-dot" style={{ background: it.color }} onClick={() => cycle(it)} title="色を変える"></button>
                     <div className="kt-headinner">
-                      <input className="kt-itemname" value={it.name} onChange={e => patch(it.id, "name", e.target.value)} />
-                      <div className="kt-itemdates">
-                        <input type="date" value={it.start} onChange={e => patch(it.id, "start", e.target.value)} />
-                        <input type="date" value={it.end} onChange={e => patch(it.id, "end", e.target.value)} />
-                      </div>
+                      {printing ? (
+                        <div className="kt-itemname-s">{it.name}</div>
+                      ) : (
+                        <React.Fragment>
+                          <input className="kt-itemname" value={it.name} onChange={e => patch(it.id, "name", e.target.value)} />
+                          <div className="kt-itemdates">
+                            <input type="date" value={it.start} onChange={e => patch(it.id, "start", e.target.value)} />
+                            <input type="date" value={it.end} onChange={e => patch(it.id, "end", e.target.value)} />
+                          </div>
+                        </React.Fragment>
+                      )}
                     </div>
-                    <button type="button" className="kt-del" onClick={() => remove(it.id)} title="削除">×</button>
+                    {!printing && <button type="button" className="kt-del" onClick={() => remove(it.id)} title="削除">×</button>}
                   </div>
 
                   {showNote && (
                     <div className="kt-cell-note">
-                      <textarea className="kt-note" rows="2" placeholder="備考" value={it.note || ""}
-                        onChange={e => patch(it.id, "note", e.target.value)} />
+                      {printing
+                        ? <div className="kt-note-s">{it.note || ""}</div>
+                        : <textarea className="kt-note" rows="2" placeholder="備考" value={it.note || ""}
+                            onChange={e => patch(it.id, "note", e.target.value)} />}
                     </div>
                   )}
 
@@ -427,6 +455,7 @@ function KouteiHyou() {
             )}
           </div>
         </div>
+        {printing && <div className="kt-madeon">作成日 {today}</div>}
       </div>
 
       <footer className="kt-foot">
