@@ -123,6 +123,25 @@
   .kt-gbar::before{left:0} .kt-gbar::after{right:0}
   .kt-gbar span{position:absolute; right:0; top:-15px; font-family:'Roboto Mono',monospace; font-size:9px; font-weight:700; color:var(--ink); white-space:nowrap}
 
+  /* 帯:期間を薄い面で塗る */
+  .kt-gband{position:absolute; top:50%; transform:translateY(-50%); height:calc(var(--pbarh) + 12px); background:rgba(22,35,58,.13); border-left:3px solid var(--ink); border-right:3px solid var(--ink); z-index:1; display:flex; align-items:center; justify-content:flex-end; padding-right:7px}
+  .kt-gband span{font-family:'Roboto Mono',monospace; font-size:10px; font-weight:700; color:var(--ink)}
+
+  /* 分割:配下の色をそのまま細く並べる */
+  .kt-grail{position:absolute; top:50%; transform:translateY(-50%); height:2px; background:var(--ink); opacity:.35; z-index:1}
+  .kt-gseg{position:absolute; top:50%; transform:translateY(-50%); height:calc(var(--gbarh) + 2px); border-radius:1px; z-index:2; opacity:.9}
+
+  /* 見出しのみ */
+  .kt-grp.style-header .kt-cell-head{background:var(--ink); border-bottom:1px solid var(--ink)}
+  .kt-grp.style-header .kt-gname,.kt-grp.style-header .kt-gname-s{color:#fff}
+  .kt-grp.style-header .kt-caret,.kt-grp.style-header .kt-count-badge{color:#B9C2D0}
+  .kt-grp.style-header .kt-cell-note{background:var(--ink)}
+  .kt-grp.style-header .kt-note{color:#fff}
+  .kt-grp.style-header .kt-note::placeholder{color:#6C7A90}
+  .kt-grp.style-header .kt-tool{color:#8E9AAC}
+
+  .kt-sel{border:1px solid var(--line); background:#fff; border-radius:2px; padding:6px 8px; font-size:14px; font-weight:700; color:var(--ink); -webkit-appearance:menulist; appearance:menulist; min-height:36px}
+
   /* 詳細項目 */
   .kt-item{min-height:var(--rowh)}
   .kt-item .kt-cell-head{padding-left:26px}
@@ -247,6 +266,7 @@ function KouteiHyou() {
   const [meta, setMeta] = useState({ date: today, author: "", company: "" });
   const [show, setShow] = useState({ date: true, author: true, company: true });
   const [range, setRange] = useState({ mode:"auto", week:"", month:"", from:"", to:"" });
+  const [gstyle, setGstyle] = useState("bracket");
   const [kind, setKind] = useState("task");
   const [draft, setDraft] = useState({ name:"", start:defaultStart, end:addDays(defaultStart,4), color:PALETTE[4].v, note:"" });
   const [status, setStatus] = useState("");
@@ -285,12 +305,12 @@ function KouteiHyou() {
     setStatus("保存中");
     const t = setTimeout(() => {
       try {
-        localStorage.setItem(KEY, JSON.stringify({ site, start, end, rows, showNote, meta, show, range }));
+        localStorage.setItem(KEY, JSON.stringify({ site, start, end, rows, showNote, meta, show, range, gstyle }));
         setStatus("保存済み");
       } catch (e) { setStatus("保存できません"); }
     }, 500);
     return () => clearTimeout(t);
-  }, [site, start, end, rows, showNote, meta, show, range]);
+  }, [site, start, end, rows, showNote, meta, show, range, gstyle]);
 
   const tasks = rows.filter(r => r.kind === "task");
   const groups = rows.filter(r => r.kind === "group");
@@ -362,10 +382,11 @@ function KouteiHyou() {
       if (kids.length) {
         map[r.id] = {
           n: kids.length,
+          kids: kids,
           start: kids.reduce((a,b) => b.start < a ? b.start : a, kids[0].start),
           end: kids.reduce((a,b) => b.end > a ? b.end : a, kids[0].end),
         };
-      } else map[r.id] = { n: 0 };
+      } else map[r.id] = { n: 0, kids: [] };
     });
     return map;
   }, [rows]);
@@ -461,7 +482,7 @@ function KouteiHyou() {
   };
 
   const exportJSON = () => {
-    const blob = new Blob([JSON.stringify({ site, start, end, rows, showNote, meta, show }, null, 2)], { type:"application/json" });
+    const blob = new Blob([JSON.stringify({ site, start, end, rows, showNote, meta, show, range, gstyle }, null, 2)], { type:"application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = (site.trim() || "工程表") + ".json";
@@ -681,7 +702,7 @@ function KouteiHyou() {
                 : span(r.start, r.end);
 
               return (
-                <div key={r.id} className={"kt-row " + (isGroup ? "kt-grp" : "kt-item" + (child ? " child" : ""))}>
+                <div key={r.id} className={"kt-row " + (isGroup ? "kt-grp style-" + gstyle : "kt-item" + (child ? " child" : ""))}>
                   <div className={"kt-cell-head" + (showNote ? " has-note" : "")}>
                     {isGroup ? (
                       <React.Fragment>
@@ -696,9 +717,9 @@ function KouteiHyou() {
                       </React.Fragment>
                     ) : (
                       <React.Fragment>
-                        {!printing
-                          ? <button type="button" className="kt-dot" style={{ background: r.color }} onClick={() => cycle(r)} title="色を変える"></button>
-                          : <span className="kt-dot" style={{ background: r.color }}></span>}
+                        {!printing && (
+                          <button type="button" className="kt-dot" style={{ background: r.color }} onClick={() => cycle(r)} title="色を変える"></button>
+                        )}
                         <div className="kt-headinner">
                           {printing ? (
                             <div className="kt-itemname-s">{r.name}</div>
@@ -735,10 +756,27 @@ function KouteiHyou() {
 
                   <div className="kt-track">
                     {days.map(x => <div key={x.s} className={"kt-tick" + (x.dow === 0 ? " sun" : x.dow === 6 ? " sat" : "")} />)}
-                    {b && isGroup && (
+                    {b && isGroup && gstyle === "bracket" && (
                       <div className="kt-gbar" style={{ left: b.left, width: Math.max(b.width, 10) }}>
                         <span>{b.len}日</span>
                       </div>
+                    )}
+                    {b && isGroup && gstyle === "band" && (
+                      <div className="kt-gband" style={{ left: b.left, width: Math.max(b.width, 10) }}>
+                        <span>{b.len}日</span>
+                      </div>
+                    )}
+                    {b && isGroup && gstyle === "split" && (
+                      <React.Fragment>
+                        <div className="kt-grail" style={{ left: b.left, width: Math.max(b.width, 10) }}></div>
+                        {sm.kids.map(kd => {
+                          const kb = span(kd.start, kd.end);
+                          return kb ? (
+                            <div key={kd.id} className="kt-gseg"
+                              style={{ left: kb.left, width: Math.max(kb.width, 6), background: kd.color }}></div>
+                          ) : null;
+                        })}
+                      </React.Fragment>
                     )}
                     {b && !isGroup && (
                       <div className={"kt-bar" + (b.cutL ? " cutl" : "") + (b.cutR ? " cutr" : "")}
@@ -761,6 +799,14 @@ function KouteiHyou() {
       </div>
 
       <div className="kt-pdfset">
+        <span>大枠の表現</span>
+        <select className="kt-sel" value={gstyle} onChange={e => setGstyle(e.target.value)}>
+          <option value="bracket">括弧線 ┣━━┫</option>
+          <option value="band">帯(期間を面で塗る)</option>
+          <option value="split">色分割(配下の色を並べる)</option>
+          <option value="header">見出しのみ(線を出さない)</option>
+        </select>
+
         <span>PDFの表示範囲</span>
         <select value={range.mode} onChange={e => setRange(Object.assign({}, range, { mode: e.target.value }))}>
           <option value="auto">自動(1週間なら週・1か月なら月)</option>
