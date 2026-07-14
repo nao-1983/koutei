@@ -90,16 +90,23 @@
   .kt-corner-note{border-left-color:rgba(255,255,255,.3); border-right-color:var(--ink)}
 
   .kt-month{background:var(--ink); color:var(--paper); border-left:1px solid rgba(255,255,255,.3); font-family:'Roboto Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.06em; display:flex; align-items:center; padding:7px 8px; white-space:nowrap; overflow:hidden}
-  .kt-day{width:34px; min-width:34px; border-right:1px solid var(--line2); border-bottom:1px solid var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4px 0; background:#fff}
+  .kt-day{width:var(--cell); min-width:var(--cell); border-right:1px solid var(--line2); border-bottom:1px solid var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4px 0; background:#fff}
   .kt-day b{font-family:'Roboto Mono',monospace; font-size:12px; font-weight:700; line-height:1.1}
   .kt-day i{font-style:normal; font-size:9px; color:var(--ink2); line-height:1.3}
   .kt-day.sat{background:var(--sat)} .kt-day.sat i{color:#215FA6}
   .kt-day.sun{background:var(--sun)} .kt-day.sun i{color:var(--red)}
   .kt-day.now b{background:var(--red); color:#fff; border-radius:2px; padding:0 3px}
+  .kt-wide .kt-day b{font-size:20px} .kt-wide .kt-day i{font-size:12px; margin-top:2px}
 
   .kt-track{position:relative; display:flex; flex:1}
-  .kt-tick{width:34px; min-width:34px; border-right:1px solid var(--line2); border-bottom:1px solid var(--line)}
+  .kt-tick{width:var(--cell); min-width:var(--cell); border-right:1px solid var(--line2); border-bottom:1px solid var(--line)}
   .kt-tick.sat{background:var(--sat)} .kt-tick.sun{background:var(--sun)}
+
+  /* PDF出力範囲の設定 */
+  .kt-pdfset{margin-top:12px; padding:10px 12px; background:#fff; border:1px solid var(--line); border-radius:3px; display:flex; gap:12px; align-items:center; flex-wrap:wrap; font-size:13px; font-weight:700; color:var(--ink2)}
+  .kt-pdfset select, .kt-pdfset input{border:1px solid var(--line); background:#fff; border-radius:2px; padding:7px 8px; font-size:16px; color:var(--ink); min-height:38px}
+  .kt-pdfset select{-webkit-appearance:menulist; appearance:menulist; font-weight:700}
+  .kt-range{margin-left:auto; font-family:'Roboto Mono',monospace; font-size:12px; font-weight:500; color:var(--ink); background:var(--band); border:1px solid var(--line); padding:6px 10px; border-radius:2px}
 
   /* 大枠(工種) */
   .kt-grp{min-height:var(--grouph)}
@@ -111,8 +118,8 @@
   .kt-gname{flex:1; min-width:0; border:0; background:transparent; font-size:16px; font-weight:900; letter-spacing:.04em; color:var(--ink); padding:2px 0}
   .kt-gname-s{flex:1; min-width:0; font-size:15px; font-weight:900; letter-spacing:.04em; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .kt-count-badge{font-family:'Roboto Mono',monospace; font-size:10px; color:var(--ink2); flex:none}
-  .kt-gbar{position:absolute; top:50%; transform:translateY(-50%); height:7px; background:var(--ink); z-index:2}
-  .kt-gbar::before,.kt-gbar::after{content:""; position:absolute; top:-4px; width:3px; height:15px; background:var(--ink)}
+  .kt-gbar{position:absolute; top:50%; transform:translateY(-50%); height:var(--gbarh); background:var(--ink); z-index:2}
+  .kt-gbar::before,.kt-gbar::after{content:""; position:absolute; width:3px; height:calc(var(--pbarh) + 4px); top:calc((var(--gbarh) - var(--pbarh) - 4px) / 2); background:var(--ink)}
   .kt-gbar::before{left:0} .kt-gbar::after{right:0}
   .kt-gbar span{position:absolute; right:0; top:-15px; font-family:'Roboto Mono',monospace; font-size:9px; font-weight:700; color:var(--ink); white-space:nowrap}
 
@@ -138,7 +145,7 @@
   .kt-note::placeholder{color:#C8C8BC}
   .kt-note-s{font-size:10px; line-height:1.5; color:var(--ink); word-break:break-all}
 
-  .kt-bar{position:absolute; top:50%; transform:translateY(-50%); height:16px; border-radius:2px; z-index:2; display:flex; align-items:center; justify-content:flex-end; padding-right:5px; box-shadow:0 1px 0 rgba(0,0,0,.18)}
+  .kt-bar{position:absolute; top:50%; transform:translateY(-50%); height:var(--pbarh); border-radius:2px; z-index:2; display:flex; align-items:center; justify-content:flex-end; padding-right:5px; box-shadow:0 1px 0 rgba(0,0,0,.18)}
   .kt-bar span{font-family:'Roboto Mono',monospace; font-size:9px; font-weight:700; color:#fff; opacity:.9; white-space:nowrap}
   .kt-bar.cutl{clip-path:polygon(6px 0,100% 0,100% 100%,6px 100%,0 50%)}
   .kt-bar.cutr{clip-path:polygon(0 0,calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,0 100%)}
@@ -162,8 +169,8 @@
   /* PDF出力時 */
   .kt-sheet.printing{background:#fff}
   .kt-sheet.printing .kt-scroll{overflow:visible}
-  .kt-sheet.printing .kt-item{min-height:42px}
-  .kt-sheet.printing .kt-grp{min-height:38px}
+  .kt-sheet.printing .kt-item{min-height:var(--prowh)}
+  .kt-sheet.printing .kt-grp{min-height:var(--pgrouph)}
   .kt-site-s{display:block; width:100%; margin:6px 0 12px; padding:0 0 8px; font-size:28px; font-weight:900; line-height:1.4; border-bottom:2px solid var(--ink); color:var(--ink); white-space:nowrap; overflow:hidden}
   .kt-date-s{font-family:'Roboto Mono',monospace; font-size:14px; font-weight:500; color:var(--ink); padding:0 2px}
   .kt-madeon{text-align:right; font-family:'Roboto Mono',monospace; font-size:10px; color:var(--ink2); padding:6px 2px 0}
@@ -192,7 +199,6 @@
 const { useState, useEffect, useMemo, useRef } = React;
 
 const TOUCH = window.matchMedia("(pointer: coarse)").matches;
-const CELL = 34;
 const HEAD = TOUCH ? 230 : 205;
 const NOTE = TOUCH ? 170 : 150;
 const VARS = TOUCH
@@ -210,6 +216,10 @@ const toStr = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
 const parse = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
 const addDays = (s,n) => { const d = parse(s); d.setDate(d.getDate()+n); return toStr(d); };
 const diff = (a,b) => Math.round((parse(b) - parse(a)) / 86400000);
+/* その日を含む週の月曜 */
+const mondayOf = s => { const d = parse(s); const w = (d.getDay() + 6) % 7; d.setDate(d.getDate() - w); return toStr(d); };
+const monthFirst = s => s.slice(0,7) + "-01";
+const monthLast = s => { const d = parse(s); return toStr(new Date(d.getFullYear(), d.getMonth() + 1, 0)); };
 
 const today = toStr(new Date());
 const defaultStart = toStr(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
@@ -236,11 +246,13 @@ function KouteiHyou() {
   const [showNote, setShowNote] = useState(true);
   const [meta, setMeta] = useState({ date: today, author: "", company: "" });
   const [show, setShow] = useState({ date: true, author: true, company: true });
+  const [range, setRange] = useState({ mode:"auto", week:"", month:"", from:"", to:"" });
   const [kind, setKind] = useState("task");
   const [draft, setDraft] = useState({ name:"", start:defaultStart, end:addDays(defaultStart,4), color:PALETTE[4].v, note:"" });
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState("");
   const [printing, setPrinting] = useState(false);
+  const [pv, setPv] = useState({});   /* PDF用に自動計算した行高・列幅 */
   const sheetRef = useRef(null);
   const loaded = useRef(false);
   const fileRef = useRef(null);
@@ -273,21 +285,62 @@ function KouteiHyou() {
     setStatus("保存中");
     const t = setTimeout(() => {
       try {
-        localStorage.setItem(KEY, JSON.stringify({ site, start, end, rows, showNote, meta, show }));
+        localStorage.setItem(KEY, JSON.stringify({ site, start, end, rows, showNote, meta, show, range }));
         setStatus("保存済み");
       } catch (e) { setStatus("保存できません"); }
     }, 500);
     return () => clearTimeout(t);
-  }, [site, start, end, rows, showNote, meta, show]);
+  }, [site, start, end, rows, showNote, meta, show, range]);
+
+  const tasks = rows.filter(r => r.kind === "task");
+  const groups = rows.filter(r => r.kind === "group");
+
+  /* 工事項目全体の実際の期間 */
+  const tMin = tasks.length ? tasks.reduce((a,b) => b.start < a ? b.start : a, tasks[0].start) : start;
+  const tMax = tasks.length ? tasks.reduce((a,b) => b.end > a ? b.end : a, tasks[0].end) : end;
+
+  /* PDFに載せる期間を決める */
+  const view = useMemo(() => {
+    const clamp = (a,b) => (diff(a,b) < 0 || diff(a,b) > 400) ? { from:start, to:end, label:"工期全体" } : { from:a, to:b };
+    if (range.mode === "week") {
+      const w = mondayOf(range.week || tMin);
+      return Object.assign(clamp(w, addDays(w, 6)), { label:"週間工程" });
+    }
+    if (range.mode === "month") {
+      const base = (range.month ? range.month + "-01" : monthFirst(tMin));
+      return Object.assign(clamp(monthFirst(base), monthLast(base)), { label:"月間工程" });
+    }
+    if (range.mode === "custom" && range.from && range.to) {
+      return Object.assign(clamp(range.from, range.to), { label:"期間指定" });
+    }
+    if (range.mode === "full") return { from:start, to:end, label:"工期全体" };
+    /* 自動 */
+    if (!tasks.length) return { from:start, to:end, label:"工期全体" };
+    const w = mondayOf(tMin);
+    if (diff(w, tMax) <= 6) return { from:w, to:addDays(w, 6), label:"週間工程(自動)" };
+    if (tMin.slice(0,7) === tMax.slice(0,7)) return { from:monthFirst(tMin), to:monthLast(tMin), label:"月間工程(自動)" };
+    return { from:start, to:end, label:"工期全体(自動)" };
+  }, [range, tasks.length, tMin, tMax, start, end]);
+
+  /* 画面は工期全体、PDF出力時だけ上の範囲で描く */
+  const viewStart = printing ? view.from : start;
+  const viewEnd = printing ? view.to : end;
 
   const days = useMemo(() => {
-    const n = diff(start, end);
+    const n = diff(viewStart, viewEnd);
     if (n < 0 || n > 400) return [];
     return Array.from({ length: n + 1 }, (_, i) => {
-      const s = addDays(start, i), d = parse(s);
+      const s = addDays(viewStart, i), d = parse(s);
       return { s, d, dow: d.getDay(), day: d.getDate(), ym: d.getFullYear() + "-" + d.getMonth() };
     });
-  }, [start, end]);
+  }, [viewStart, viewEnd]);
+
+  /* 日数が少ないときは列幅を広げる(週間工程を見やすく) */
+  const autoCell = days.length <= 8 ? 84 : days.length <= 16 ? 54 : 34;
+  const cellW = (printing && pv.cell) ? pv.cell : autoCell;
+
+  /* バーの高さ(PDFでは行高に合わせて太くする) */
+  const barH = printing && pv.rowh ? Math.min(30, Math.round(pv.rowh * 0.32)) : 16;
 
   const months = useMemo(() => {
     const g = [];
@@ -328,10 +381,9 @@ function KouteiHyou() {
     return out;
   }, [rows]);
 
-  const tasks = rows.filter(r => r.kind === "task");
-  const groups = rows.filter(r => r.kind === "group");
   const headW = HEAD + (showNote ? NOTE : 0);
   const todayIdx = days.findIndex(x => x.s === today);
+  const totalDays = diff(start, end) + 1;
 
   const add = () => {
     const name = draft.name.trim();
@@ -438,11 +490,30 @@ function KouteiHyou() {
   const exportPDF = async () => {
     if (!rows.length || busy) return;
     setBusy("PDFを作成中");
+    setPv({});
     setPrinting(true);
-    await new Promise(r => setTimeout(r, 120));
+    await new Promise(r => setTimeout(r, 140));
     const node = sheetRef.current;
     node.classList.add("printing");
+
+    /* A4横(余白8mm)の中身の比率に、表の縦横比を寄せる */
+    const PW = 297, PH = 210, M = 8;
+    const RATIO = (PW - M * 2) / (PH - M * 2);   /* ≒1.45 */
     try {
+      await new Promise(r => setTimeout(r, 60));
+      const W = node.scrollWidth, H = node.scrollHeight;
+      const n = Math.max(visible.length, 1);
+      if (W / H > RATIO) {
+        /* 横長すぎる → 行を高くして紙の縦を埋める */
+        const extra = Math.max(0, W / RATIO - H);
+        setPv({ rowh: Math.min(130, 42 + extra / n) });
+      } else if (days.length) {
+        /* 縦長すぎる → 列を広げて紙の横を埋める */
+        const room = H * RATIO - headW;
+        setPv({ cell: Math.max(autoCell, Math.min(110, room / days.length)) });
+      }
+      await new Promise(r => setTimeout(r, 140));
+
       await loadScript(H2C);
       await loadScript(JSPDF);
       const canvas = await window.html2canvas(node, {
@@ -451,10 +522,9 @@ function KouteiHyou() {
       });
       const jsPDF = window.jspdf.jsPDF;
       const pdf = new jsPDF({ orientation:"landscape", unit:"mm", format:"a4" });
-      const pw = 297, ph = 210, m = 8;
-      const r = Math.min((pw - m*2) / canvas.width, (ph - m*2) / canvas.height);
+      const r = Math.min((PW - M*2) / canvas.width, (PH - M*2) / canvas.height);
       const w = canvas.width * r, h = canvas.height * r;
-      pdf.addImage(canvas.toDataURL("image/png"), "PNG", (pw - w) / 2, m, w, h);
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", (PW - w) / 2, (PH - h) / 2, w, h);
       pdf.save((site.trim() || "工程表").replace(/[\\/:*?"<>|]/g, "_") + "_工程表_" + today + ".pdf");
       setBusy("");
     } catch (err) {
@@ -464,19 +534,26 @@ function KouteiHyou() {
     } finally {
       node.classList.remove("printing");
       setPrinting(false);
+      setPv({});
     }
   };
 
   const span = (s0, e0) => {
     const n = days.length;
-    const s = diff(start, s0), e = diff(start, e0);
+    const s = diff(viewStart, s0), e = diff(viewStart, e0);
     if (e < 0 || s > n - 1) return null;
     const from = Math.max(0, s), to = Math.min(n - 1, e);
-    return { left: from*CELL + 3, width: (to - from + 1)*CELL - 6, cutL: s < 0, cutR: e > n - 1, len: e - s + 1 };
+    return { left: from*cellW + 3, width: (to - from + 1)*cellW - 6, cutL: s < 0, cutR: e > n - 1, len: e - s + 1 };
   };
 
   return (
-    <div className="kt" style={VARS}>
+    <div className={"kt" + (cellW >= 54 ? " kt-wide" : "")} style={Object.assign({}, VARS, {
+      "--cell": cellW + "px",
+      "--pbarh": barH + "px",
+      "--gbarh": Math.round(barH * 0.5) + "px",
+      "--prowh": (pv.rowh ? Math.round(pv.rowh) : 42) + "px",
+      "--pgrouph": (pv.rowh ? Math.round(pv.rowh * 0.8) : 38) + "px",
+    })}>
       <div className="kt-add">
         <div className="kt-kind">
           <button type="button" className={kind === "group" ? "on" : ""} onClick={() => setKind("group")}>大枠(工種)</button>
@@ -536,7 +613,7 @@ function KouteiHyou() {
                   <label>竣工<input type="date" value={end} onChange={e => setEnd(e.target.value)} /></label>
                 </React.Fragment>
               )}
-              <span className="kt-total">{days.length ? "工期 " + days.length + "日" : "期間が正しくありません"}</span>
+              <span className="kt-total">{totalDays > 0 ? "工期 " + totalDays + "日" : "期間が正しくありません"}</span>
             </div>
           </div>
 
@@ -574,11 +651,11 @@ function KouteiHyou() {
         </header>
 
         <div className="kt-scroll">
-          <div className="kt-grid" style={{ width: headW + days.length * CELL }}>
+          <div className="kt-grid" style={{ width: headW + days.length * cellW }}>
             <div className="kt-row">
               <div className={"kt-cell-head kt-corner" + (showNote ? " has-note" : "")}>工 事 項 目</div>
               {showNote && <div className="kt-cell-note kt-corner kt-corner-note">備 考</div>}
-              {months.map(m => <div key={m.ym} className="kt-month" style={{ width: m.span * CELL }}>{m.label}</div>)}
+              {months.map(m => <div key={m.ym} className="kt-month" style={{ width: m.span * cellW }}>{m.label}</div>)}
             </div>
 
             <div className="kt-row">
@@ -592,7 +669,7 @@ function KouteiHyou() {
             </div>
 
             {todayIdx >= 0 && rows.length > 0 && !printing && (
-              <div className="kt-todayline" style={{ left: headW + todayIdx * CELL + CELL / 2 }}><span>本日</span></div>
+              <div className="kt-todayline" style={{ left: headW + todayIdx * cellW + cellW / 2 }}><span>本日</span></div>
             )}
 
             {visible.map(({ r, child }) => {
@@ -680,6 +757,43 @@ function KouteiHyou() {
             )}
           </div>
         </div>
+      </div>
+
+      <div className="kt-pdfset">
+        <span>PDFの表示範囲</span>
+        <select value={range.mode} onChange={e => setRange(Object.assign({}, range, { mode: e.target.value }))}>
+          <option value="auto">自動(1週間なら週・1か月なら月)</option>
+          <option value="week">週間工程</option>
+          <option value="month">月間工程</option>
+          <option value="custom">期間を指定</option>
+          <option value="full">工期全体</option>
+        </select>
+
+        {range.mode === "week" && (
+          <label>週の起点
+            <input type="date" value={range.week || mondayOf(tMin)}
+              onChange={e => setRange(Object.assign({}, range, { week: e.target.value }))} />
+          </label>
+        )}
+        {range.mode === "month" && (
+          <label>対象の月
+            <input type="month" value={range.month || tMin.slice(0,7)}
+              onChange={e => setRange(Object.assign({}, range, { month: e.target.value }))} />
+          </label>
+        )}
+        {range.mode === "custom" && (
+          <React.Fragment>
+            <input type="date" value={range.from || tMin}
+              onChange={e => setRange(Object.assign({}, range, { from: e.target.value }))} />
+            <span className="kt-tilde">〜</span>
+            <input type="date" value={range.to || tMax}
+              onChange={e => setRange(Object.assign({}, range, { to: e.target.value }))} />
+          </React.Fragment>
+        )}
+
+        <span className="kt-range">
+          {view.from} 〜 {view.to}({diff(view.from, view.to) + 1}日)
+        </span>
       </div>
 
       <footer className="kt-foot">
