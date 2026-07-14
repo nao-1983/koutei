@@ -22,7 +22,7 @@
   #root{min-height:100vh}
   .kt{
     --ink:#16233A; --ink2:#4A5870; --paper:#F3F2EC; --line:#D8D8CD; --line2:#EAE9E0;
-    --sat:#EDF1F7; --sun:#F7EDEE; --red:#C8102E;
+    --sat:#EDF1F7; --sun:#F7EDEE; --red:#C8102E; --band:#F0F0E8;
     font-family:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
     color:var(--ink); background:var(--paper); min-height:100vh;
     padding:18px 16px calc(40px + env(safe-area-inset-bottom));
@@ -31,13 +31,26 @@
     -webkit-tap-highlight-color:rgba(200,16,46,.12);
   }
   .kt *{box-sizing:border-box}
-  .kt input,.kt button,.kt textarea{font-family:inherit; -webkit-appearance:none; appearance:none; border-radius:0}
+  .kt input,.kt button,.kt textarea,.kt select{font-family:inherit; -webkit-appearance:none; appearance:none; border-radius:0}
   .kt :focus-visible{outline:2px solid var(--red); outline-offset:1px}
 
   .kt-sheet{background:var(--paper); padding:2px}
-
-  .kt-head{border-bottom:3px double var(--ink); padding-bottom:12px; margin-bottom:14px}
+  .kt-head{border-bottom:3px double var(--ink); padding-bottom:12px; margin-bottom:14px; display:flex; gap:20px; align-items:flex-end}
+  .kt-headmain{flex:1; min-width:0}
   .kt-eyebrow{font-size:12px; font-weight:900; letter-spacing:.35em; color:var(--ink2)}
+
+  /* 表題欄 */
+  .kt-title-block{flex:none; width:270px; border:1.5px solid var(--ink); background:#fff}
+  .kt-tb-row{display:flex; align-items:stretch; border-bottom:1px solid var(--line)}
+  .kt-tb-row:last-child{border-bottom:0}
+  .kt-tb-label{flex:none; width:74px; background:var(--band); border-right:1px solid var(--line); display:flex; align-items:center; padding:0 8px; font-size:11px; font-weight:900; letter-spacing:.12em; color:var(--ink2)}
+  .kt-tb-row input{flex:1; min-width:0; border:0; background:transparent; padding:9px 8px; font-size:15px; font-weight:700; color:var(--ink); min-height:40px}
+  .kt-tb-row input[type=date]{font-family:'Roboto Mono',monospace; font-weight:500; border:0; border-radius:0}
+  .kt-tb-row input::placeholder{color:#C2C2B6; font-weight:400}
+  .kt-tb-val{flex:1; min-width:0; padding:9px 8px; font-size:14px; font-weight:700; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .kt-tb-val.mono{font-family:'Roboto Mono',monospace; font-weight:500}
+
+  .kt-toggles{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
   .kt-eyebrow span{font-family:'Roboto Mono',monospace; font-weight:500; letter-spacing:.14em; font-size:10px; margin-left:8px; opacity:.65}
   .kt-site{display:block; width:100%; margin:4px 0 10px; padding:2px 0; font-size:30px; font-weight:900; letter-spacing:.02em; line-height:1.25; border:0; border-bottom:2px solid var(--ink); background:transparent; color:var(--ink)}
   .kt-site::placeholder{color:#B4B4A8; font-weight:700}
@@ -47,7 +60,12 @@
   .kt-tilde{color:var(--ink2)}
   .kt-total{margin-left:auto; font-family:'Roboto Mono',monospace; font-size:11px; letter-spacing:.08em; background:var(--ink); color:var(--paper); padding:5px 9px; border-radius:2px}
 
-  .kt-add{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px; padding:12px; background:#fff; border:1px solid var(--line); border-radius:3px}
+  /* 追加フォーム */
+  .kt-add{margin-bottom:16px; padding:12px; background:#fff; border:1px solid var(--line); border-radius:3px}
+  .kt-kind{display:flex; gap:0; margin-bottom:10px; border:1.5px solid var(--ink); border-radius:2px; overflow:hidden; width:fit-content}
+  .kt-kind button{background:#fff; color:var(--ink); border:0; padding:9px 18px; font-size:13px; font-weight:700; cursor:pointer; min-height:40px}
+  .kt-kind button.on{background:var(--ink); color:#fff}
+  .kt-fields{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
   .kt-name{flex:1 1 200px; min-width:0; border:0; border-bottom:1.5px solid var(--ink); background:transparent; font-size:17px; font-weight:700; padding:8px 2px; color:var(--ink)}
   .kt-notein{flex:1 1 170px; min-width:0; border:0; border-bottom:1px solid var(--line); background:transparent; font-size:16px; padding:8px 2px; color:var(--ink)}
   .kt-name::placeholder,.kt-notein::placeholder{color:#B4B4A8; font-weight:400}
@@ -57,12 +75,13 @@
   .kt-sw.on{border-color:var(--ink); transform:scale(1.1)}
   .kt-btn{background:var(--ink); color:#fff; border:0; border-radius:2px; padding:12px 20px; font-size:14px; font-weight:700; cursor:pointer; letter-spacing:.05em; min-height:44px}
   .kt-btn:hover{background:#0D1626}
+  .kt-hint{font-size:12px; color:var(--ink2); margin-top:8px; line-height:1.6}
 
+  /* 表 */
   .kt-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1.5px solid var(--ink); background:#fff; border-radius:3px}
   .kt-grid{position:relative; min-width:100%}
   .kt-row{display:flex; align-items:stretch}
-
-  .kt-cell-head{position:sticky; left:0; z-index:5; width:var(--head); min-width:var(--head); background:#fff; border-bottom:1px solid var(--line); border-right:1.5px solid var(--ink); display:flex; align-items:center; gap:7px; padding:6px 6px 6px 8px}
+  .kt-cell-head{position:sticky; left:0; z-index:5; width:var(--head); min-width:var(--head); background:#fff; border-bottom:1px solid var(--line); border-right:1.5px solid var(--ink); display:flex; align-items:center; gap:6px; padding:6px 4px 6px 8px}
   .kt-cell-head.has-note{border-right:0}
   .kt-cell-note{position:sticky; left:var(--head); z-index:5; width:var(--notew); min-width:var(--notew); background:#fff; border-left:1px dashed var(--line); border-right:1.5px solid var(--ink); border-bottom:1px solid var(--line); padding:5px; display:flex; align-items:center}
 
@@ -82,16 +101,42 @@
   .kt-tick{width:34px; min-width:34px; border-right:1px solid var(--line2); border-bottom:1px solid var(--line)}
   .kt-tick.sat{background:var(--sat)} .kt-tick.sun{background:var(--sun)}
 
+  /* 大枠(工種) */
+  .kt-grp{min-height:var(--grouph)}
+  .kt-grp .kt-cell-head,.kt-grp .kt-cell-note{background:var(--band); border-bottom:1px solid var(--line)}
+  .kt-grp .kt-tick{background:rgba(22,35,58,.045)}
+  .kt-grp .kt-tick.sat{background:rgba(33,95,166,.07)}
+  .kt-grp .kt-tick.sun{background:rgba(200,16,46,.06)}
+  .kt-caret{border:0; background:transparent; color:var(--ink); font-size:13px; cursor:pointer; padding:4px 2px; flex:none; width:22px; line-height:1}
+  .kt-gname{flex:1; min-width:0; border:0; background:transparent; font-size:16px; font-weight:900; letter-spacing:.04em; color:var(--ink); padding:2px 0}
+  .kt-gname-s{flex:1; min-width:0; font-size:15px; font-weight:900; letter-spacing:.04em; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .kt-count-badge{font-family:'Roboto Mono',monospace; font-size:10px; color:var(--ink2); flex:none}
+  .kt-gbar{position:absolute; top:50%; transform:translateY(-50%); height:7px; background:var(--ink); z-index:2}
+  .kt-gbar::before,.kt-gbar::after{content:""; position:absolute; top:-4px; width:3px; height:15px; background:var(--ink)}
+  .kt-gbar::before{left:0} .kt-gbar::after{right:0}
+  .kt-gbar span{position:absolute; right:0; top:-15px; font-family:'Roboto Mono',monospace; font-size:9px; font-weight:700; color:var(--ink); white-space:nowrap}
+
+  /* 詳細項目 */
   .kt-item{min-height:var(--rowh)}
+  .kt-item .kt-cell-head{padding-left:26px}
+  .kt-item.child .kt-cell-head{padding-left:26px; background:linear-gradient(90deg,var(--ink) 0 2px,#fff 2px)}
   .kt-dot{width:20px; height:20px; border-radius:3px; border:0; cursor:pointer; flex:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
   .kt-headinner{flex:1; min-width:0}
   .kt-itemname{width:100%; border:0; background:transparent; font-size:15px; font-weight:700; color:var(--ink); padding:2px 0}
+  .kt-itemname-s{font-size:14px; font-weight:700; color:var(--ink); line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .kt-itemdates{display:flex; flex-direction:var(--datedir); gap:4px; margin-top:3px}
   .kt-itemdates input{font-size:var(--datefs); padding:3px 5px; width:var(--datew); min-height:0; border-color:var(--line2); color:var(--ink2)}
-  .kt-del{border:0; background:transparent; color:#B4B4A8; font-size:22px; line-height:1; cursor:pointer; padding:6px; flex:none}
-  .kt-del:hover{color:var(--red)}
+
+  .kt-tools{display:flex; flex-direction:column; gap:1px; flex:none}
+  .kt-tool{border:0; background:transparent; color:#A9AFB8; font-size:12px; line-height:1; cursor:pointer; padding:4px 3px; min-width:22px}
+  .kt-tool:hover{color:var(--ink)}
+  .kt-tool.del{color:#C7C7BB; font-size:18px}
+  .kt-tool.del:hover{color:var(--red)}
+  .kt-tool:disabled{opacity:.25; cursor:default}
+
   .kt-note{width:100%; border:0; background:transparent; resize:none; font-size:var(--notefs); line-height:1.5; color:var(--ink2); padding:2px; overflow:auto}
   .kt-note::placeholder{color:#C8C8BC}
+  .kt-note-s{font-size:10px; line-height:1.5; color:var(--ink); word-break:break-all}
 
   .kt-bar{position:absolute; top:50%; transform:translateY(-50%); height:16px; border-radius:2px; z-index:2; display:flex; align-items:center; justify-content:flex-end; padding-right:5px; box-shadow:0 1px 0 rgba(0,0,0,.18)}
   .kt-bar span{font-family:'Roboto Mono',monospace; font-size:9px; font-weight:700; color:#fff; opacity:.9; white-space:nowrap}
@@ -101,7 +146,7 @@
   .kt-todayline{position:absolute; top:0; bottom:0; width:2px; background:var(--red); z-index:3; pointer-events:none}
   .kt-todayline span{position:absolute; top:0; left:-16px; width:34px; text-align:center; font-size:9px; font-weight:700; color:#fff; background:var(--red); padding:1px 0}
 
-  .kt-empty{padding:26px 18px; font-size:14px; color:var(--ink2); line-height:1.8; position:sticky; left:0; max-width:520px}
+  .kt-empty{padding:26px 18px; font-size:14px; color:var(--ink2); line-height:1.8; position:sticky; left:0; max-width:560px}
 
   .kt-foot{display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-top:14px; font-size:13px; color:var(--ink2)}
   .kt-count{font-family:'Roboto Mono',monospace; font-weight:700; color:var(--ink)}
@@ -114,16 +159,19 @@
   .kt-link.danger{color:var(--red); border-color:var(--red)}
   .kt-status{margin-left:auto; font-size:11px; letter-spacing:.06em}
 
-  /* PDF出力時:入力欄をただの文字に差し替えて描画する(html2canvasの文字切れ対策) */
+  /* PDF出力時 */
   .kt-sheet.printing{background:#fff}
   .kt-sheet.printing .kt-scroll{overflow:visible}
-  .kt-sheet.printing .kt-item{min-height:46px}
+  .kt-sheet.printing .kt-item{min-height:42px}
+  .kt-sheet.printing .kt-grp{min-height:38px}
   .kt-site-s{display:block; width:100%; margin:6px 0 12px; padding:0 0 8px; font-size:28px; font-weight:900; line-height:1.4; border-bottom:2px solid var(--ink); color:var(--ink); white-space:nowrap; overflow:hidden}
   .kt-date-s{font-family:'Roboto Mono',monospace; font-size:14px; font-weight:500; color:var(--ink); padding:0 2px}
-  .kt-itemname-s{font-size:14px; font-weight:700; color:var(--ink); line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
-  .kt-note-s{font-size:10px; line-height:1.5; color:var(--ink); word-break:break-all}
   .kt-madeon{text-align:right; font-family:'Roboto Mono',monospace; font-size:10px; color:var(--ink2); padding:6px 2px 0}
 
+  @media (max-width:820px){
+    .kt-head{flex-direction:column; align-items:stretch}
+    .kt-title-block{width:100%}
+  }
   @media (max-width:640px){
     .kt{padding:14px 10px 30px}
     .kt-site{font-size:22px}
@@ -143,15 +191,13 @@
 <script type="text/babel" data-presets="react">
 const { useState, useEffect, useMemo, useRef } = React;
 
-/* タッチ端末(iPadなど)では入力欄を16px以上にしてSafariの自動ズームを防ぐ。
-   そのぶん項目欄を広げ、日付を縦に並べる。 */
 const TOUCH = window.matchMedia("(pointer: coarse)").matches;
 const CELL = 34;
-const HEAD = TOUCH ? 215 : 190;
+const HEAD = TOUCH ? 230 : 205;
 const NOTE = TOUCH ? 170 : 150;
 const VARS = TOUCH
-  ? { "--head":HEAD+"px", "--notew":NOTE+"px", "--rowh":"92px", "--datedir":"column", "--datew":"150px", "--datefs":"16px", "--notefs":"16px" }
-  : { "--head":HEAD+"px", "--notew":NOTE+"px", "--rowh":"56px", "--datedir":"row", "--datew":"88px", "--datefs":"11px", "--notefs":"11px" };
+  ? { "--head":HEAD+"px", "--notew":NOTE+"px", "--rowh":"92px", "--grouph":"46px", "--datedir":"column", "--datew":"150px", "--datefs":"16px", "--notefs":"16px" }
+  : { "--head":HEAD+"px", "--notew":NOTE+"px", "--rowh":"56px", "--grouph":"40px", "--datedir":"row", "--datew":"88px", "--datefs":"11px", "--notefs":"11px" };
 
 const KEY = "koutei:v1";
 const PALETTE = [
@@ -180,12 +226,17 @@ const loadScript = src => new Promise((res, rej) => {
   document.head.appendChild(s);
 });
 
+/* 行データ:kind = "group"(大枠/工種) または "task"(詳細項目)。
+   task は、すぐ上にある group に属する。 */
 function KouteiHyou() {
   const [site, setSite] = useState("");
   const [start, setStart] = useState(defaultStart);
   const [end, setEnd] = useState(defaultEnd);
-  const [items, setItems] = useState([]);
+  const [rows, setRows] = useState([]);
   const [showNote, setShowNote] = useState(true);
+  const [meta, setMeta] = useState({ date: today, author: "", company: "" });
+  const [show, setShow] = useState({ date: true, author: true, company: true });
+  const [kind, setKind] = useState("task");
   const [draft, setDraft] = useState({ name:"", start:defaultStart, end:addDays(defaultStart,4), color:PALETTE[4].v, note:"" });
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState("");
@@ -202,12 +253,15 @@ function KouteiHyou() {
         setSite(s.site || "");
         setStart(s.start || defaultStart);
         setEnd(s.end || defaultEnd);
-        setItems((s.items || []).map(it => Object.assign({ note:"" }, it)));
+        if (s.rows) setRows(s.rows);
+        else if (s.items) /* 旧データを詳細項目として引き継ぐ */
+          setRows(s.items.map(it => Object.assign({ kind:"task", note:"" }, it)));
         if (typeof s.showNote === "boolean") setShowNote(s.showNote);
+        if (s.meta) setMeta(Object.assign({ date: today, author:"", company:"" }, s.meta));
+        if (s.show) setShow(Object.assign({ date:true, author:true, company:true }, s.show));
       }
     } catch (e) {}
     loaded.current = true;
-    /* 圏外の現場でもPDFを出せるよう、通信できるうちにPDF用ライブラリを取得しておく */
     const t = setTimeout(() => {
       if (navigator.onLine) { loadScript(H2C).catch(()=>{}); loadScript(JSPDF).catch(()=>{}); }
     }, 3000);
@@ -219,12 +273,12 @@ function KouteiHyou() {
     setStatus("保存中");
     const t = setTimeout(() => {
       try {
-        localStorage.setItem(KEY, JSON.stringify({ site, start, end, items, showNote }));
+        localStorage.setItem(KEY, JSON.stringify({ site, start, end, rows, showNote, meta, show }));
         setStatus("保存済み");
       } catch (e) { setStatus("保存できません"); }
     }, 500);
     return () => clearTimeout(t);
-  }, [site, start, end, items, showNote]);
+  }, [site, start, end, rows, showNote, meta, show]);
 
   const days = useMemo(() => {
     const n = diff(start, end);
@@ -245,34 +299,117 @@ function KouteiHyou() {
     return g;
   }, [days]);
 
+  /* 各大枠の配下(直後から次の大枠まで)を集計 */
+  const summary = useMemo(() => {
+    const map = {};
+    rows.forEach((r, i) => {
+      if (r.kind !== "group") return;
+      const kids = [];
+      for (let j = i + 1; j < rows.length && rows[j].kind !== "group"; j++) kids.push(rows[j]);
+      if (kids.length) {
+        map[r.id] = {
+          n: kids.length,
+          start: kids.reduce((a,b) => b.start < a ? b.start : a, kids[0].start),
+          end: kids.reduce((a,b) => b.end > a ? b.end : a, kids[0].end),
+        };
+      } else map[r.id] = { n: 0 };
+    });
+    return map;
+  }, [rows]);
+
+  /* 折りたたみ中の大枠に属する行を隠す */
+  const visible = useMemo(() => {
+    const out = [];
+    let hide = false, inGroup = false;
+    rows.forEach(r => {
+      if (r.kind === "group") { hide = !!r.collapsed; inGroup = true; out.push({ r, child:false }); }
+      else if (!hide) out.push({ r, child: inGroup });
+    });
+    return out;
+  }, [rows]);
+
+  const tasks = rows.filter(r => r.kind === "task");
+  const groups = rows.filter(r => r.kind === "group");
   const headW = HEAD + (showNote ? NOTE : 0);
   const todayIdx = days.findIndex(x => x.s === today);
 
   const add = () => {
     const name = draft.name.trim();
     if (!name) return;
+    if (kind === "group") {
+      setRows(rows.concat([{ id: uid(), kind:"group", name, note: draft.note.trim(), collapsed:false }]));
+      setDraft(Object.assign({}, draft, { name:"", note:"" }));
+      return;
+    }
     const s = draft.start <= draft.end ? draft.start : draft.end;
     const e = draft.start <= draft.end ? draft.end : draft.start;
-    setItems(items.concat([{ id: uid(), name, start: s, end: e, color: draft.color, note: draft.note.trim() }]));
+    setRows(rows.concat([{ id: uid(), kind:"task", name, start:s, end:e, color:draft.color, note:draft.note.trim() }]));
     const next = PALETTE[(PALETTE.findIndex(p => p.v === draft.color) + 1) % PALETTE.length].v;
     setDraft({ name:"", start:s, end:e, color:next, note:"" });
   };
-  const patch = (id, k, v) => setItems(items.map(it => it.id === id ? Object.assign({}, it, { [k]: v }) : it));
-  const remove = id => setItems(items.filter(it => it.id !== id));
-  const cycle = it => patch(it.id, "color", PALETTE[(PALETTE.findIndex(p => p.v === it.color) + 1) % PALETTE.length].v);
+
+  const patch = (id, k, v) => setRows(rows.map(r => r.id === id ? Object.assign({}, r, { [k]: v }) : r));
+  const remove = id => {
+    const i = rows.findIndex(r => r.id === id);
+    if (i < 0) return;
+    if (rows[i].kind === "group") {
+      let n = 1;
+      while (i + n < rows.length && rows[i + n].kind !== "group") n++;
+      if (n > 1 && !window.confirm("この大枠と、その中の詳細項目 " + (n - 1) + " 件を削除します。よろしいですか。")) return;
+      setRows(rows.slice(0, i).concat(rows.slice(i + n)));
+    } else {
+      setRows(rows.filter(r => r.id !== id));
+    }
+  };
+  const cycle = r => patch(r.id, "color", PALETTE[(PALETTE.findIndex(p => p.v === r.color) + 1) % PALETTE.length].v);
+
+  /* 並び替え。大枠は配下ごと動かす */
+  const blockAt = i => {
+    if (rows[i].kind !== "group") return 1;
+    let n = 1;
+    while (i + n < rows.length && rows[i + n].kind !== "group") n++;
+    return n;
+  };
+  const move = (id, dir) => {
+    const i = rows.findIndex(r => r.id === id);
+    if (i < 0) return;
+    const len = blockAt(i);
+    const block = rows.slice(i, i + len);
+    const rest = rows.slice(0, i).concat(rows.slice(i + len));
+    let at;
+    if (dir < 0) {
+      if (i === 0) return;
+      let j = i - 1;
+      if (rows[j].kind === "task") {
+        // 直前が詳細なら、その所属大枠の先頭より前には出さない
+        at = j;
+      } else {
+        let k = j;
+        while (k > 0 && rows[k - 1].kind === "task") k--;
+        at = rows[k].kind === "group" ? k : j;
+        at = k;
+      }
+      setRows(rest.slice(0, at).concat(block, rest.slice(at)));
+    } else {
+      if (i + len >= rows.length) return;
+      const nextLen = rows[i + len].kind === "group" ? blockAt(i + len) : 1;
+      at = i + nextLen;
+      setRows(rest.slice(0, at).concat(block, rest.slice(at)));
+    }
+  };
 
   const fitPeriod = () => {
-    if (!items.length) return;
-    setStart(items.reduce((a,b) => b.start < a ? b.start : a, items[0].start));
-    setEnd(items.reduce((a,b) => b.end > a ? b.end : a, items[0].end));
+    if (!tasks.length) return;
+    setStart(tasks.reduce((a,b) => b.start < a ? b.start : a, tasks[0].start));
+    setEnd(tasks.reduce((a,b) => b.end > a ? b.end : a, tasks[0].end));
   };
   const clearAll = () => {
-    if (items.length && !window.confirm("工事項目をすべて削除します。よろしいですか。")) return;
-    setItems([]);
+    if (rows.length && !window.confirm("すべての行を削除します。よろしいですか。")) return;
+    setRows([]);
   };
 
   const exportJSON = () => {
-    const blob = new Blob([JSON.stringify({ site, start, end, items, showNote }, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify({ site, start, end, rows, showNote, meta, show }, null, 2)], { type:"application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     a.download = (site.trim() || "工程表") + ".json";
@@ -289,7 +426,9 @@ function KouteiHyou() {
         setSite(s.site || "");
         setStart(s.start || defaultStart);
         setEnd(s.end || defaultEnd);
-        setItems((s.items || []).map(it => Object.assign({ note:"" }, it)));
+        setRows(s.rows || (s.items || []).map(it => Object.assign({ kind:"task", note:"" }, it)));
+        if (s.meta) setMeta(Object.assign({ date: today, author:"", company:"" }, s.meta));
+        if (s.show) setShow(Object.assign({ date:true, author:true, company:true }, s.show));
       } catch (err) { window.alert("このファイルは読み込めません。書き出したJSONを選んでください。"); }
     };
     r.readAsText(f);
@@ -297,10 +436,10 @@ function KouteiHyou() {
   };
 
   const exportPDF = async () => {
-    if (!items.length || busy) return;
+    if (!rows.length || busy) return;
     setBusy("PDFを作成中");
     setPrinting(true);
-    await new Promise(r => setTimeout(r, 120)); // 文字への差し替えを待つ
+    await new Promise(r => setTimeout(r, 120));
     const node = sheetRef.current;
     node.classList.add("printing");
     try {
@@ -328,9 +467,9 @@ function KouteiHyou() {
     }
   };
 
-  const bar = it => {
+  const span = (s0, e0) => {
     const n = days.length;
-    const s = diff(start, it.start), e = diff(start, it.end);
+    const s = diff(start, s0), e = diff(start, e0);
     if (e < 0 || s > n - 1) return null;
     const from = Math.max(0, s), to = Math.min(n - 1, e);
     return { left: from*CELL + 3, width: (to - from + 1)*CELL - 6, cutL: s < 0, cutR: e > n - 1, len: e - s + 1 };
@@ -339,49 +478,99 @@ function KouteiHyou() {
   return (
     <div className="kt" style={VARS}>
       <div className="kt-add">
-        <input className="kt-name" value={draft.name} placeholder="工事項目(例:基礎配筋)"
-          onChange={e => setDraft(Object.assign({}, draft, { name: e.target.value }))}
-          onKeyDown={e => e.key === "Enter" && add()} />
-        <input className="kt-notein" value={draft.note} placeholder="備考(業者・数量など)"
-          onChange={e => setDraft(Object.assign({}, draft, { note: e.target.value }))}
-          onKeyDown={e => e.key === "Enter" && add()} />
-        <div className="kt-dates">
-          <input type="date" value={draft.start} onChange={e => setDraft(Object.assign({}, draft, { start: e.target.value }))} />
-          <span className="kt-tilde">〜</span>
-          <input type="date" value={draft.end} onChange={e => setDraft(Object.assign({}, draft, { end: e.target.value }))} />
+        <div className="kt-kind">
+          <button type="button" className={kind === "group" ? "on" : ""} onClick={() => setKind("group")}>大枠(工種)</button>
+          <button type="button" className={kind === "task" ? "on" : ""} onClick={() => setKind("task")}>詳細項目</button>
         </div>
-        <div className="kt-swatches">
-          {PALETTE.map(p => (
-            <button key={p.v} type="button" title={p.name} aria-label={p.name}
-              className={"kt-sw" + (draft.color === p.v ? " on" : "")} style={{ background: p.v }}
-              onClick={() => setDraft(Object.assign({}, draft, { color: p.v }))} />
-          ))}
+        <div className="kt-fields">
+          <input className="kt-name" value={draft.name}
+            placeholder={kind === "group" ? "大枠の名称(例:電気設備工事)" : "詳細項目(例:配管・配線)"}
+            onChange={e => setDraft(Object.assign({}, draft, { name: e.target.value }))}
+            onKeyDown={e => e.key === "Enter" && add()} />
+          <input className="kt-notein" value={draft.note} placeholder="備考(業者・数量など)"
+            onChange={e => setDraft(Object.assign({}, draft, { note: e.target.value }))}
+            onKeyDown={e => e.key === "Enter" && add()} />
+          {kind === "task" && (
+            <React.Fragment>
+              <div className="kt-dates">
+                <input type="date" value={draft.start} onChange={e => setDraft(Object.assign({}, draft, { start: e.target.value }))} />
+                <span className="kt-tilde">〜</span>
+                <input type="date" value={draft.end} onChange={e => setDraft(Object.assign({}, draft, { end: e.target.value }))} />
+              </div>
+              <div className="kt-swatches">
+                {PALETTE.map(p => (
+                  <button key={p.v} type="button" title={p.name} aria-label={p.name}
+                    className={"kt-sw" + (draft.color === p.v ? " on" : "")} style={{ background: p.v }}
+                    onClick={() => setDraft(Object.assign({}, draft, { color: p.v }))} />
+                ))}
+              </div>
+            </React.Fragment>
+          )}
+          <button type="button" className="kt-btn" onClick={add}>{kind === "group" ? "大枠を追加" : "詳細項目を追加"}</button>
         </div>
-        <button type="button" className="kt-btn" onClick={add}>項目を追加</button>
+        <div className="kt-hint">
+          {kind === "group"
+            ? "大枠(工種)には日付を入れません。すぐ下に並べた詳細項目の期間から、まとめ線が自動で引かれます。"
+            : "詳細項目は、すぐ上にある大枠の中に入ります。↑↓ボタンで並べ替えできます。"}
+        </div>
       </div>
 
       <div className="kt-sheet" ref={sheetRef}>
         <header className="kt-head">
-          <div className="kt-eyebrow">工 程 表 <span>SITE SCHEDULE</span></div>
-          {printing
-            ? <div className="kt-site-s">{site.trim() || "現場名称"}</div>
-            : <input className="kt-site" value={site} onChange={e => setSite(e.target.value)} placeholder="現場名称を入力" />}
-          <div className="kt-period">
-            {printing ? (
-              <React.Fragment>
-                <span>着工</span><span className="kt-date-s">{start}</span>
-                <span className="kt-tilde">〜</span>
-                <span>竣工</span><span className="kt-date-s">{end}</span>
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                <label>着工<input type="date" value={start} onChange={e => setStart(e.target.value)} /></label>
-                <span className="kt-tilde">〜</span>
-                <label>竣工<input type="date" value={end} onChange={e => setEnd(e.target.value)} /></label>
-              </React.Fragment>
-            )}
-            <span className="kt-total">{days.length ? "工期 " + days.length + "日" : "期間が正しくありません"}</span>
+          <div className="kt-headmain">
+            <div className="kt-eyebrow">工 程 表 <span>SITE SCHEDULE</span></div>
+            {printing
+              ? <div className="kt-site-s">{site.trim() || "現場名称"}</div>
+              : <input className="kt-site" value={site} onChange={e => setSite(e.target.value)} placeholder="現場名称を入力" />}
+            <div className="kt-period">
+              {printing ? (
+                <React.Fragment>
+                  <span>着工</span><span className="kt-date-s">{start}</span>
+                  <span className="kt-tilde">〜</span>
+                  <span>竣工</span><span className="kt-date-s">{end}</span>
+                </React.Fragment>
+              ) : (
+                <React.Fragment>
+                  <label>着工<input type="date" value={start} onChange={e => setStart(e.target.value)} /></label>
+                  <span className="kt-tilde">〜</span>
+                  <label>竣工<input type="date" value={end} onChange={e => setEnd(e.target.value)} /></label>
+                </React.Fragment>
+              )}
+              <span className="kt-total">{days.length ? "工期 " + days.length + "日" : "期間が正しくありません"}</span>
+            </div>
           </div>
+
+          {(show.company || show.author || show.date) && (
+            <div className="kt-title-block">
+              {show.company && (
+                <div className="kt-tb-row">
+                  <div className="kt-tb-label">作成会社</div>
+                  {printing
+                    ? <div className="kt-tb-val">{meta.company}</div>
+                    : <input value={meta.company} placeholder="会社名"
+                        onChange={e => setMeta(Object.assign({}, meta, { company: e.target.value }))} />}
+                </div>
+              )}
+              {show.author && (
+                <div className="kt-tb-row">
+                  <div className="kt-tb-label">作 成 者</div>
+                  {printing
+                    ? <div className="kt-tb-val">{meta.author}</div>
+                    : <input value={meta.author} placeholder="担当者名"
+                        onChange={e => setMeta(Object.assign({}, meta, { author: e.target.value }))} />}
+                </div>
+              )}
+              {show.date && (
+                <div className="kt-tb-row">
+                  <div className="kt-tb-label">作 成 日</div>
+                  {printing
+                    ? <div className="kt-tb-val mono">{meta.date}</div>
+                    : <input type="date" value={meta.date}
+                        onChange={e => setMeta(Object.assign({}, meta, { date: e.target.value }))} />}
+                </div>
+              )}
+            </div>
+          )}
         </header>
 
         <div className="kt-scroll">
@@ -402,46 +591,80 @@ function KouteiHyou() {
               ))}
             </div>
 
-            {todayIdx >= 0 && items.length > 0 && (
+            {todayIdx >= 0 && rows.length > 0 && (
               <div className="kt-todayline" style={{ left: headW + todayIdx * CELL + CELL / 2 }}><span>本日</span></div>
             )}
 
-            {items.map(it => {
-              const b = bar(it);
+            {visible.map(({ r, child }) => {
+              const isGroup = r.kind === "group";
+              const sm = isGroup ? summary[r.id] : null;
+              const b = isGroup
+                ? (sm && sm.n ? span(sm.start, sm.end) : null)
+                : span(r.start, r.end);
+
               return (
-                <div key={it.id} className="kt-row kt-item">
+                <div key={r.id} className={"kt-row " + (isGroup ? "kt-grp" : "kt-item" + (child ? " child" : ""))}>
                   <div className={"kt-cell-head" + (showNote ? " has-note" : "")}>
-                    <button type="button" className="kt-dot" style={{ background: it.color }} onClick={() => cycle(it)} title="色を変える"></button>
-                    <div className="kt-headinner">
-                      {printing ? (
-                        <div className="kt-itemname-s">{it.name}</div>
-                      ) : (
-                        <React.Fragment>
-                          <input className="kt-itemname" value={it.name} onChange={e => patch(it.id, "name", e.target.value)} />
-                          <div className="kt-itemdates">
-                            <input type="date" value={it.start} onChange={e => patch(it.id, "start", e.target.value)} />
-                            <input type="date" value={it.end} onChange={e => patch(it.id, "end", e.target.value)} />
-                          </div>
-                        </React.Fragment>
-                      )}
-                    </div>
-                    {!printing && <button type="button" className="kt-del" onClick={() => remove(it.id)} title="削除">×</button>}
+                    {isGroup ? (
+                      <React.Fragment>
+                        {!printing && (
+                          <button type="button" className="kt-caret" onClick={() => patch(r.id, "collapsed", !r.collapsed)}
+                            title={r.collapsed ? "開く" : "たたむ"}>{r.collapsed ? "▶" : "▼"}</button>
+                        )}
+                        {printing
+                          ? <div className="kt-gname-s">{r.name}</div>
+                          : <input className="kt-gname" value={r.name} onChange={e => patch(r.id, "name", e.target.value)} />}
+                        {sm && sm.n > 0 && <span className="kt-count-badge">{sm.n}</span>}
+                      </React.Fragment>
+                    ) : (
+                      <React.Fragment>
+                        {!printing
+                          ? <button type="button" className="kt-dot" style={{ background: r.color }} onClick={() => cycle(r)} title="色を変える"></button>
+                          : <span className="kt-dot" style={{ background: r.color }}></span>}
+                        <div className="kt-headinner">
+                          {printing ? (
+                            <div className="kt-itemname-s">{r.name}</div>
+                          ) : (
+                            <React.Fragment>
+                              <input className="kt-itemname" value={r.name} onChange={e => patch(r.id, "name", e.target.value)} />
+                              <div className="kt-itemdates">
+                                <input type="date" value={r.start} onChange={e => patch(r.id, "start", e.target.value)} />
+                                <input type="date" value={r.end} onChange={e => patch(r.id, "end", e.target.value)} />
+                              </div>
+                            </React.Fragment>
+                          )}
+                        </div>
+                      </React.Fragment>
+                    )}
+
+                    {!printing && (
+                      <div className="kt-tools">
+                        <button type="button" className="kt-tool" onClick={() => move(r.id, -1)} title="上へ">▲</button>
+                        <button type="button" className="kt-tool" onClick={() => move(r.id, 1)} title="下へ">▼</button>
+                        <button type="button" className="kt-tool del" onClick={() => remove(r.id)} title="削除">×</button>
+                      </div>
+                    )}
                   </div>
 
                   {showNote && (
                     <div className="kt-cell-note">
                       {printing
-                        ? <div className="kt-note-s">{it.note || ""}</div>
-                        : <textarea className="kt-note" rows="2" placeholder="備考" value={it.note || ""}
-                            onChange={e => patch(it.id, "note", e.target.value)} />}
+                        ? <div className="kt-note-s">{r.note || ""}</div>
+                        : <textarea className="kt-note" rows="2" placeholder="備考" value={r.note || ""}
+                            onChange={e => patch(r.id, "note", e.target.value)} />}
                     </div>
                   )}
 
                   <div className="kt-track">
                     {days.map(x => <div key={x.s} className={"kt-tick" + (x.dow === 0 ? " sun" : x.dow === 6 ? " sat" : "")} />)}
-                    {b && (
+                    {b && isGroup && (
+                      <div className="kt-gbar" style={{ left: b.left, width: Math.max(b.width, 10) }}>
+                        <span>{b.len}日</span>
+                      </div>
+                    )}
+                    {b && !isGroup && (
                       <div className={"kt-bar" + (b.cutL ? " cutl" : "") + (b.cutR ? " cutr" : "")}
-                        style={{ left: b.left, width: Math.max(b.width, 8), background: it.color }} title={it.note || ""}>
+                        style={{ left: b.left, width: Math.max(b.width, 8), background: r.color }} title={r.note || ""}>
                         <span>{b.len}日</span>
                       </div>
                     )}
@@ -450,25 +673,37 @@ function KouteiHyou() {
               );
             })}
 
-            {items.length === 0 && (
-              <div className="kt-empty">工事項目がまだありません。上の欄に名称・備考・期間を入れて「項目を追加」を押すと、ここに色付きラインが引かれます。</div>
+            {rows.length === 0 && (
+              <div className="kt-empty">
+                まず「大枠(工種)」を追加し、その下に「詳細項目」を足していきます。大枠には自動でまとめ線が引かれ、詳細項目には色付きラインが引かれます。大枠を使わず詳細項目だけ並べることもできます。
+              </div>
             )}
           </div>
         </div>
-        {printing && <div className="kt-madeon">作成日 {today}</div>}
       </div>
 
       <footer className="kt-foot">
-        <span className="kt-count">{items.length} 項目</span>
-        <button type="button" className="kt-pdf" onClick={exportPDF} disabled={!items.length || !!busy}>{busy || "PDFで書き出す"}</button>
-        <label className="kt-toggle">
-          <input type="checkbox" checked={showNote} onChange={e => setShowNote(e.target.checked)} />備考欄を表示
-        </label>
-        <button type="button" className="kt-link" onClick={fitPeriod} disabled={!items.length}>工期を項目に合わせる</button>
-        <button type="button" className="kt-link" onClick={exportJSON} disabled={!items.length}>データを書き出す</button>
+        <span className="kt-count">大枠 {groups.length} / 詳細 {tasks.length}</span>
+        <button type="button" className="kt-pdf" onClick={exportPDF} disabled={!rows.length || !!busy}>{busy || "PDFで書き出す"}</button>
+        <div className="kt-toggles">
+          <label className="kt-toggle">
+            <input type="checkbox" checked={showNote} onChange={e => setShowNote(e.target.checked)} />備考欄
+          </label>
+          <label className="kt-toggle">
+            <input type="checkbox" checked={show.company} onChange={e => setShow(Object.assign({}, show, { company: e.target.checked }))} />作成会社
+          </label>
+          <label className="kt-toggle">
+            <input type="checkbox" checked={show.author} onChange={e => setShow(Object.assign({}, show, { author: e.target.checked }))} />作成者
+          </label>
+          <label className="kt-toggle">
+            <input type="checkbox" checked={show.date} onChange={e => setShow(Object.assign({}, show, { date: e.target.checked }))} />作成日
+          </label>
+        </div>
+        <button type="button" className="kt-link" onClick={fitPeriod} disabled={!tasks.length}>工期を項目に合わせる</button>
+        <button type="button" className="kt-link" onClick={exportJSON} disabled={!rows.length}>データを書き出す</button>
         <button type="button" className="kt-link" onClick={() => fileRef.current.click()}>データを読み込む</button>
         <input type="file" accept="application/json" ref={fileRef} onChange={importJSON} style={{ display:"none" }} />
-        <button type="button" className="kt-link danger" onClick={clearAll} disabled={!items.length}>すべて削除</button>
+        <button type="button" className="kt-link danger" onClick={clearAll} disabled={!rows.length}>すべて削除</button>
         <span className="kt-status">{status}</span>
       </footer>
     </div>
@@ -477,7 +712,6 @@ function KouteiHyou() {
 
 ReactDOM.createRoot(document.getElementById("root")).render(<KouteiHyou />);
 
-/* 圏外でも開けるようにキャッシュする */
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
     navigator.serviceWorker.register("./sw.js").catch(() => {});
