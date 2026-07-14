@@ -592,7 +592,8 @@ function KouteiHyou() {
         </div>
       </div>
 
-      <div className="kt-sheet" ref={sheetRef}>
+      <div className="kt-sheet" ref={sheetRef}
+        style={printing && days.length ? { width: (headW + days.length * cellW + 8) + "px" } : undefined}>
         <header className="kt-head">
           <div className="kt-headmain">
             <div className="kt-eyebrow">工 程 表 <span>SITE SCHEDULE</span></div>
