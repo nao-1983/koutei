@@ -585,13 +585,13 @@ function KouteiHyou() {
               <div className={"kt-cell-head kt-corner2" + (showNote ? " has-note" : "")}>期間</div>
               {showNote && <div className="kt-cell-note kt-corner2 kt-corner-note"></div>}
               {days.map(x => (
-                <div key={x.s} className={"kt-day" + (x.dow === 0 ? " sun" : x.dow === 6 ? " sat" : "") + (x.s === today ? " now" : "")}>
+                <div key={x.s} className={"kt-day" + (x.dow === 0 ? " sun" : x.dow === 6 ? " sat" : "") + (x.s === today && !printing ? " now" : "")}>
                   <b>{x.day}</b><i>{WD[x.dow]}</i>
                 </div>
               ))}
             </div>
 
-            {todayIdx >= 0 && rows.length > 0 && (
+            {todayIdx >= 0 && rows.length > 0 && !printing && (
               <div className="kt-todayline" style={{ left: headW + todayIdx * CELL + CELL / 2 }}><span>本日</span></div>
             )}
 
