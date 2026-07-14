@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>現場工程表</title>
+<meta name="theme-color" content="#16233A">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="工程表">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+
+<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js" crossorigin></script>
+
+<style>
+  html{-webkit-text-size-adjust:100%}
+  html,body{margin:0;padding:0}
+  #root{min-height:100vh}
+  .kt{
+    --ink:#16233A; --ink2:#4A5870; --paper:#F3F2EC; --line:#D8D8CD; --line2:#EAE9E0;
+    --sat:#EDF1F7; --sun:#F7EDEE; --red:#C8102E;
+    font-family:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+    color:var(--ink); background:var(--paper); min-height:100vh;
+    padding:18px 16px calc(40px + env(safe-area-inset-bottom));
+    background-image:linear-gradient(var(--line2) 1px,transparent 1px),linear-gradient(90deg,var(--line2) 1px,transparent 1px);
+    background-size:22px 22px;
+    -webkit-tap-highlight-color:rgba(200,16,46,.12);
+  }
+  .kt *{box-sizing:border-box}
+  .kt input,.kt button,.kt textarea{font-family:inherit; -webkit-appearance:none; appearance:none; border-radius:0}
+  .kt :focus-visible{outline:2px solid var(--red); outline-offset:1px}
+
+  .kt-sheet{background:var(--paper); padding:2px}
+
+  .kt-head{border-bottom:3px double var(--ink); padding-bottom:12px; margin-bottom:14px}
+  .kt-eyebrow{font-size:12px; font-weight:900; letter-spacing:.35em; color:var(--ink2)}
+  .kt-eyebrow span{font-family:'Roboto Mono',monospace; font-weight:500; letter-spacing:.14em; font-size:10px; margin-left:8px; opacity:.65}
+  .kt-site{display:block; width:100%; margin:4px 0 10px; padding:2px 0; font-size:30px; font-weight:900; letter-spacing:.02em; line-height:1.25; border:0; border-bottom:2px solid var(--ink); background:transparent; color:var(--ink)}
+  .kt-site::placeholder{color:#B4B4A8; font-weight:700}
+  .kt-period{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:13px; font-weight:700; color:var(--ink2)}
+  .kt-period label{display:flex; align-items:center; gap:6px}
+  .kt input[type=date]{font-family:'Roboto Mono',monospace; font-size:16px; font-weight:500; color:var(--ink); border:1px solid var(--line); background:#fff; border-radius:2px; padding:6px 8px; min-height:34px}
+  .kt-tilde{color:var(--ink2)}
+  .kt-total{margin-left:auto; font-family:'Roboto Mono',monospace; font-size:11px; letter-spacing:.08em; background:var(--ink); color:var(--paper); padding:5px 9px; border-radius:2px}
+
+  .kt-add{display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px; padding:12px; background:#fff; border:1px solid var(--line); border-radius:3px}
+  .kt-name{flex:1 1 200px; min-width:0; border:0; border-bottom:1.5px solid var(--ink); background:transparent; font-size:17px; font-weight:700; padding:8px 2px; color:var(--ink)}
+  .kt-notein{flex:1 1 170px; min-width:0; border:0; border-bottom:1px solid var(--line); background:transparent; font-size:16px; padding:8px 2px; color:var(--ink)}
+  .kt-name::placeholder,.kt-notein::placeholder{color:#B4B4A8; font-weight:400}
+  .kt-dates{display:flex; align-items:center; gap:6px}
+  .kt-swatches{display:flex; gap:8px}
+  .kt-sw{width:32px; height:32px; border:2px solid transparent; border-radius:50%; cursor:pointer; padding:0; box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
+  .kt-sw.on{border-color:var(--ink); transform:scale(1.1)}
+  .kt-btn{background:var(--ink); color:#fff; border:0; border-radius:2px; padding:12px 20px; font-size:14px; font-weight:700; cursor:pointer; letter-spacing:.05em; min-height:44px}
+  .kt-btn:hover{background:#0D1626}
+
+  .kt-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1.5px solid var(--ink); background:#fff; border-radius:3px}
+  .kt-grid{position:relative; min-width:100%}
+  .kt-row{display:flex; align-items:stretch}
+
+  .kt-cell-head{position:sticky; left:0; z-index:5; width:var(--head); min-width:var(--head); background:#fff; border-bottom:1px solid var(--line); border-right:1.5px solid var(--ink); display:flex; align-items:center; gap:7px; padding:6px 6px 6px 8px}
+  .kt-cell-head.has-note{border-right:0}
+  .kt-cell-note{position:sticky; left:var(--head); z-index:5; width:var(--notew); min-width:var(--notew); background:#fff; border-left:1px dashed var(--line); border-right:1.5px solid var(--ink); border-bottom:1px solid var(--line); padding:5px; display:flex; align-items:center}
+
+  .kt-corner,.kt-corner2{background:var(--ink); color:var(--paper); font-size:11px; font-weight:900; letter-spacing:.2em; border-bottom-color:rgba(255,255,255,.25)}
+  .kt-corner2{letter-spacing:.1em; font-size:10px}
+  .kt-corner-note{border-left-color:rgba(255,255,255,.3); border-right-color:var(--ink)}
+
+  .kt-month{background:var(--ink); color:var(--paper); border-left:1px solid rgba(255,255,255,.3); font-family:'Roboto Mono',monospace; font-size:11px; font-weight:500; letter-spacing:.06em; display:flex; align-items:center; padding:7px 8px; white-space:nowrap; overflow:hidden}
+  .kt-day{width:34px; min-width:34px; border-right:1px solid var(--line2); border-bottom:1px solid var(--line); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:4px 0; background:#fff}
+  .kt-day b{font-family:'Roboto Mono',monospace; font-size:12px; font-weight:700; line-height:1.1}
+  .kt-day i{font-style:normal; font-size:9px; color:var(--ink2); line-height:1.3}
+  .kt-day.sat{background:var(--sat)} .kt-day.sat i{color:#215FA6}
+  .kt-day.sun{background:var(--sun)} .kt-day.sun i{color:var(--red)}
+  .kt-day.now b{background:var(--red); color:#fff; border-radius:2px; padding:0 3px}
+
+  .kt-track{position:relative; display:flex; flex:1}
+  .kt-tick{width:34px; min-width:34px; border-right:1px solid var(--line2); border-bottom:1px solid var(--line)}
+  .kt-tick.sat{background:var(--sat)} .kt-tick.sun{background:var(--sun)}
+
+  .kt-item{min-height:var(--rowh)}
+  .kt-dot{width:20px; height:20px; border-radius:3px; border:0; cursor:pointer; flex:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
+  .kt-headinner{flex:1; min-width:0}
+  .kt-itemname{width:100%; border:0; background:transparent; font-size:15px; font-weight:700; color:var(--ink); padding:2px 0}
+  .kt-itemdates{display:flex; flex-direction:var(--datedir); gap:4px; margin-top:3px}
+  .kt-itemdates input{font-size:var(--datefs); padding:3px 5px; width:var(--datew); min-height:0; border-color:var(--line2); color:var(--ink2)}
+  .kt-del{border:0; background:transparent; color:#B4B4A8; font-size:22px; line-height:1; cursor:pointer; padding:6px; flex:none}
+  .kt-del:hover{color:var(--red)}
+  .kt-note{width:100%; border:0; background:transparent; resize:none; font-size:var(--notefs); line-height:1.5; color:var(--ink2); padding:2px; overflow:auto}
+  .kt-note::placeholder{color:#C8C8BC}
+
+  .kt-bar{position:absolute; top:50%; transform:translateY(-50%); height:16px; border-radius:2px; z-index:2; display:flex; align-items:center; justify-content:flex-end; padding-right:5px; box-shadow:0 1px 0 rgba(0,0,0,.18)}
+  .kt-bar span{font-family:'Roboto Mono',monospace; font-size:9px; font-weight:700; color:#fff; opacity:.9; white-space:nowrap}
+  .kt-bar.cutl{clip-path:polygon(6px 0,100% 0,100% 100%,6px 100%,0 50%)}
+  .kt-bar.cutr{clip-path:polygon(0 0,calc(100% - 6px) 0,100% 50%,calc(100% - 6px) 100%,0 100%)}
+
+  .kt-todayline{position:absolute; top:0; bottom:0; width:2px; background:var(--red); z-index:3; pointer-events:none}
+  .kt-todayline span{position:absolute; top:0; left:-16px; width:34px; text-align:center; font-size:9px; font-weight:700; color:#fff; background:var(--red); padding:1px 0}
+
+  .kt-empty{padding:26px 18px; font-size:14px; color:var(--ink2); line-height:1.8; position:sticky; left:0; max-width:520px}
+
+  .kt-foot{display:flex; align-items:center; gap:16px; flex-wrap:wrap; margin-top:14px; font-size:13px; color:var(--ink2)}
+  .kt-count{font-family:'Roboto Mono',monospace; font-weight:700; color:var(--ink)}
+  .kt-pdf{background:var(--red); color:#fff; border:0; border-radius:2px; padding:11px 18px; font-size:13px; font-weight:700; letter-spacing:.05em; cursor:pointer; min-height:44px}
+  .kt-pdf:disabled{background:#D6D6CC; color:#fff; cursor:default}
+  .kt-toggle{display:flex; align-items:center; gap:6px; font-weight:700; color:var(--ink); cursor:pointer; padding:6px 0}
+  .kt-toggle input{width:20px; height:20px; -webkit-appearance:checkbox; appearance:checkbox}
+  .kt-link{background:none; border:0; padding:6px 0; font-size:13px; font-weight:700; color:var(--ink); cursor:pointer; border-bottom:1.5px solid var(--ink)}
+  .kt-link:disabled{color:#B4B4A8; border-color:#DCDCD2; cursor:default}
+  .kt-link.danger{color:var(--red); border-color:var(--red)}
+  .kt-status{margin-left:auto; font-size:11px; letter-spacing:.06em}
+
+  .kt-sheet.printing{background:#fff}
+  .kt-sheet.printing .kt-scroll{overflow:visible}
+  .kt-sheet.printing .kt-del{visibility:hidden}
+  .kt-sheet.printing input[type=date]{border-color:transparent; background:transparent}
+  .kt-sheet.printing .kt-note{color:var(--ink)}
+
+  @media (max-width:640px){
+    .kt{padding:14px 10px 30px}
+    .kt-site{font-size:22px}
+    .kt-btn{width:100%}
+  }
+  @media print{
+    .kt{background:#fff; padding:0}
+    .kt-add,.kt-foot{display:none}
+    .kt-scroll{overflow:visible}
+    @page{size:A4 landscape; margin:8mm}
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useMemo, useRef } = React;
+
+/* タッチ端末(iPadなど)では入力欄を16px以上にしてSafariの自動ズームを防ぐ。
+   そのぶん項目欄を広げ、日付を縦に並べる。 */
+const TOUCH = window.matchMedia("(pointer: coarse)").matches;
+const CELL = 34;
+const HEAD = TOUCH ? 215 : 190;
+const NOTE = TOUCH ? 170 : 150;
+const VARS = TOUCH
+  ? { "--head":HEAD+"px", "--notew":NOTE+"px", "--rowh":"92px", "--datedir":"column", "--datew":"150px", "--datefs":"16px", "--notefs":"16px" }
+  : { "--head":HEAD+"px", "--notew":NOTE+"px", "--rowh":"56px", "--datedir":"row", "--datew":"88px", "--datefs":"11px", "--notefs":"11px" };
+
+const KEY = "koutei:v1";
+const PALETTE = [
+  { name:"赤", v:"#C8102E" }, { name:"黄赤", v:"#E8590C" }, { name:"黄", v:"#E3A008" },
+  { name:"緑", v:"#12855B" }, { name:"青", v:"#215FA6" }, { name:"紫", v:"#6B4A9E" },
+];
+const WD = ["日","月","火","水","木","金","土"];
+const pad = n => String(n).padStart(2,"0");
+const toStr = d => d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const parse = s => { const [y,m,d] = s.split("-").map(Number); return new Date(y, m-1, d); };
+const addDays = (s,n) => { const d = parse(s); d.setDate(d.getDate()+n); return toStr(d); };
+const diff = (a,b) => Math.round((parse(b) - parse(a)) / 86400000);
+
+const today = toStr(new Date());
+const defaultStart = toStr(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+const defaultEnd = addDays(defaultStart, 44);
+let seq = 1;
+const uid = () => "k" + Date.now() + (seq++);
+
+const H2C = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+const JSPDF = "https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js";
+const loadScript = src => new Promise((res, rej) => {
+  if (document.querySelector('script[src="' + src + '"]')) return res();
+  const s = document.createElement("script");
+  s.src = src; s.onload = () => res(); s.onerror = () => rej(new Error(src));
+  document.head.appendChild(s);
+});
+
+function KouteiHyou() {
+  const [site, setSite] = useState("");
+  const [start, setStart] = useState(defaultStart);
+  const [end, setEnd] = useState(defaultEnd);
+  const [items, setItems] = useState([]);
+  const [showNote, setShowNote] = useState(true);
+  const [draft, setDraft] = useState({ name:"", start:defaultStart, end:addDays(defaultStart,4), color:PALETTE[4].v, note:"" });
+  const [status, setStatus] = useState("");
+  const [busy, setBusy] = useState("");
+  const sheetRef = useRef(null);
+  const loaded = useRef(false);
+  const fileRef = useRef(null);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) {
+        const s = JSON.parse(raw);
+        setSite(s.site || "");
+        setStart(s.start || defaultStart);
+        setEnd(s.end || defaultEnd);
+        setItems((s.items || []).map(it => Object.assign({ note:"" }, it)));
+        if (typeof s.showNote === "boolean") setShowNote(s.showNote);
+      }
+    } catch (e) {}
+    loaded.current = true;
+    /* 圏外の現場でもPDFを出せるよう、通信できるうちにPDF用ライブラリを取得しておく */
+    const t = setTimeout(() => {
+      if (navigator.onLine) { loadScript(H2C).catch(()=>{}); loadScript(JSPDF).catch(()=>{}); }
+    }, 3000);
+    return () => clearTimeout(t);
+  }, []);
+
+  useEffect(() => {
+    if (!loaded.current) return;
+    setStatus("保存中");
+    const t = setTimeout(() => {
+      try {
+        localStorage.setItem(KEY, JSON.stringify({ site, start, end, items, showNote }));
+        setStatus("保存済み");
+      } catch (e) { setStatus("保存できません"); }
+    }, 500);
+    return () => clearTimeout(t);
+  }, [site, start, end, items, showNote]);
+
+  const days = useMemo(() => {
+    const n = diff(start, end);
+    if (n < 0 || n > 400) return [];
+    return Array.from({ length: n + 1 }, (_, i) => {
+      const s = addDays(start, i), d = parse(s);
+      return { s, d, dow: d.getDay(), day: d.getDate(), ym: d.getFullYear() + "-" + d.getMonth() };
+    });
+  }, [start, end]);
+
+  const months = useMemo(() => {
+    const g = [];
+    days.forEach(x => {
+      const last = g[g.length - 1];
+      if (last && last.ym === x.ym) last.span++;
+      else g.push({ ym: x.ym, span: 1, label: x.d.getFullYear() + "年 " + (x.d.getMonth() + 1) + "月" });
+    });
+    return g;
+  }, [days]);
+
+  const headW = HEAD + (showNote ? NOTE : 0);
+  const todayIdx = days.findIndex(x => x.s === today);
+
+  const add = () => {
+    const name = draft.name.trim();
+    if (!name) return;
+    const s = draft.start <= draft.end ? draft.start : draft.end;
+    const e = draft.start <= draft.end ? draft.end : draft.start;
+    setItems(items.concat([{ id: uid(), name, start: s, end: e, color: draft.color, note: draft.note.trim() }]));
+    const next = PALETTE[(PALETTE.findIndex(p => p.v === draft.color) + 1) % PALETTE.length].v;
+    setDraft({ name:"", start:s, end:e, color:next, note:"" });
+  };
+  const patch = (id, k, v) => setItems(items.map(it => it.id === id ? Object.assign({}, it, { [k]: v }) : it));
+  const remove = id => setItems(items.filter(it => it.id !== id));
+  const cycle = it => patch(it.id, "color", PALETTE[(PALETTE.findIndex(p => p.v === it.color) + 1) % PALETTE.length].v);
+
+  const fitPeriod = () => {
+    if (!items.length) return;
+    setStart(items.reduce((a,b) => b.start < a ? b.start : a, items[0].start));
+    setEnd(items.reduce((a,b) => b.end > a ? b.end : a, items[0].end));
+  };
+  const clearAll = () => {
+    if (items.length && !window.confirm("工事項目をすべて削除します。よろしいですか。")) return;
+    setItems([]);
+  };
+
+  const exportJSON = () => {
+    const blob = new Blob([JSON.stringify({ site, start, end, items, showNote }, null, 2)], { type: "application/json" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = (site.trim() || "工程表") + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  const importJSON = e => {
+    const f = e.target.files && e.target.files[0];
+    if (!f) return;
+    const r = new FileReader();
+    r.onload = () => {
+      try {
+        const s = JSON.parse(r.result);
+        setSite(s.site || "");
+        setStart(s.start || defaultStart);
+        setEnd(s.end || defaultEnd);
+        setItems((s.items || []).map(it => Object.assign({ note:"" }, it)));
+      } catch (err) { window.alert("このファイルは読み込めません。書き出したJSONを選んでください。"); }
+    };
+    r.readAsText(f);
+    e.target.value = "";
+  };
+
+  const exportPDF = async () => {
+    if (!items.length || busy) return;
+    setBusy("PDFを作成中");
+    const node = sheetRef.current;
+    node.classList.add("printing");
+    try {
+      await loadScript(H2C);
+      await loadScript(JSPDF);
+      const canvas = await window.html2canvas(node, {
+        scale: 2, backgroundColor: "#FFFFFF",
+        width: node.scrollWidth, height: node.scrollHeight, windowWidth: node.scrollWidth + 40
+      });
+      const jsPDF = window.jspdf.jsPDF;
+      const pdf = new jsPDF({ orientation:"landscape", unit:"mm", format:"a4" });
+      const pw = 297, ph = 210, m = 8;
+      const r = Math.min((pw - m*2) / canvas.width, (ph - m*2) / canvas.height);
+      const w = canvas.width * r, h = canvas.height * r;
+      pdf.addImage(canvas.toDataURL("image/png"), "PNG", (pw - w) / 2, m, w, h);
+      pdf.save((site.trim() || "工程表").replace(/[\\/:*?"<>|]/g, "_") + "_工程表_" + today + ".pdf");
+      setBusy("");
+    } catch (err) {
+      setBusy("");
+      window.alert("PDFライブラリを読み込めませんでした。印刷画面を開きます。「PDFに保存」または共有から保存してください。");
+      window.print();
+    } finally {
+      node.classList.remove("printing");
+    }
+  };
+
+  const bar = it => {
+    const n = days.length;
+    const s = diff(start, it.start), e = diff(start, it.end);
+    if (e < 0 || s > n - 1) return null;
+    const from = Math.max(0, s), to = Math.min(n - 1, e);
+    return { left: from*CELL + 3, width: (to - from + 1)*CELL - 6, cutL: s < 0, cutR: e > n - 1, len: e - s + 1 };
+  };
+
+  return (
+    <div className="kt" style={VARS}>
+      <div className="kt-add">
+        <input className="kt-name" value={draft.name} placeholder="工事項目(例:基礎配筋)"
+          onChange={e => setDraft(Object.assign({}, draft, { name: e.target.value }))}
+          onKeyDown={e => e.key === "Enter" && add()} />
+        <input className="kt-notein" value={draft.note} placeholder="備考(業者・数量など)"
+          onChange={e => setDraft(Object.assign({}, draft, { note: e.target.value }))}
+          onKeyDown={e => e.key === "Enter" && add()} />
+        <div className="kt-dates">
+          <input type="date" value={draft.start} onChange={e => setDraft(Object.assign({}, draft, { start: e.target.value }))} />
+          <span className="kt-tilde">〜</span>
+          <input type="date" value={draft.end} onChange={e => setDraft(Object.assign({}, draft, { end: e.target.value }))} />
+        </div>
+        <div className="kt-swatches">
+          {PALETTE.map(p => (
+            <button key={p.v} type="button" title={p.name} aria-label={p.name}
+              className={"kt-sw" + (draft.color === p.v ? " on" : "")} style={{ background: p.v }}
+              onClick={() => setDraft(Object.assign({}, draft, { color: p.v }))} />
+          ))}
+        </div>
+        <button type="button" className="kt-btn" onClick={add}>項目を追加</button>
+      </div>
+
+      <div className="kt-sheet" ref={sheetRef}>
+        <header className="kt-head">
+          <div className="kt-eyebrow">工 程 表 <span>SITE SCHEDULE</span></div>
+          <input className="kt-site" value={site} onChange={e => setSite(e.target.value)} placeholder="現場名称を入力" />
+          <div className="kt-period">
+            <label>着工<input type="date" value={start} onChange={e => setStart(e.target.value)} /></label>
+            <span className="kt-tilde">〜</span>
+            <label>竣工<input type="date" value={end} onChange={e => setEnd(e.target.value)} /></label>
+            <span className="kt-total">{days.length ? "工期 " + days.length + "日" : "期間が正しくありません"}</span>
+          </div>
+        </header>
+
+        <div className="kt-scroll">
+          <div className="kt-grid" style={{ width: headW + days.length * CELL }}>
+            <div className="kt-row">
+              <div className={"kt-cell-head kt-corner" + (showNote ? " has-note" : "")}>工 事 項 目</div>
+              {showNote && <div className="kt-cell-note kt-corner kt-corner-note">備 考</div>}
+              {months.map(m => <div key={m.ym} className="kt-month" style={{ width: m.span * CELL }}>{m.label}</div>)}
+            </div>
+
+            <div className="kt-row">
+              <div className={"kt-cell-head kt-corner2" + (showNote ? " has-note" : "")}>期間</div>
+              {showNote && <div className="kt-cell-note kt-corner2 kt-corner-note"></div>}
+              {days.map(x => (
+                <div key={x.s} className={"kt-day" + (x.dow === 0 ? " sun" : x.dow === 6 ? " sat" : "") + (x.s === today ? " now" : "")}>
+                  <b>{x.day}</b><i>{WD[x.dow]}</i>
+                </div>
+              ))}
+            </div>
+
+            {todayIdx >= 0 && items.length > 0 && (
+              <div className="kt-todayline" style={{ left: headW + todayIdx * CELL + CELL / 2 }}><span>本日</span></div>
+            )}
+
+            {items.map(it => {
+              const b = bar(it);
+              return (
+                <div key={it.id} className="kt-row kt-item">
+                  <div className={"kt-cell-head" + (showNote ? " has-note" : "")}>
+                    <button type="button" className="kt-dot" style={{ background: it.color }} onClick={() => cycle(it)} title="色を変える"></button>
+                    <div className="kt-headinner">
+                      <input className="kt-itemname" value={it.name} onChange={e => patch(it.id, "name", e.target.value)} />
+                      <div className="kt-itemdates">
+                        <input type="date" value={it.start} onChange={e => patch(it.id, "start", e.target.value)} />
+                        <input type="date" value={it.end} onChange={e => patch(it.id, "end", e.target.value)} />
+                      </div>
+                    </div>
+                    <button type="button" className="kt-del" onClick={() => remove(it.id)} title="削除">×</button>
+                  </div>
+
+                  {showNote && (
+                    <div className="kt-cell-note">
+                      <textarea className="kt-note" rows="2" placeholder="備考" value={it.note || ""}
+                        onChange={e => patch(it.id, "note", e.target.value)} />
+                    </div>
+                  )}
+
+                  <div className="kt-track">
+                    {days.map(x => <div key={x.s} className={"kt-tick" + (x.dow === 0 ? " sun" : x.dow === 6 ? " sat" : "")} />)}
+                    {b && (
+                      <div className={"kt-bar" + (b.cutL ? " cutl" : "") + (b.cutR ? " cutr" : "")}
+                        style={{ left: b.left, width: Math.max(b.width, 8), background: it.color }} title={it.note || ""}>
+                        <span>{b.len}日</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+
+            {items.length === 0 && (
+              <div className="kt-empty">工事項目がまだありません。上の欄に名称・備考・期間を入れて「項目を追加」を押すと、ここに色付きラインが引かれます。</div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <footer className="kt-foot">
+        <span className="kt-count">{items.length} 項目</span>
+        <button type="button" className="kt-pdf" onClick={exportPDF} disabled={!items.length || !!busy}>{busy || "PDFで書き出す"}</button>
+        <label className="kt-toggle">
+          <input type="checkbox" checked={showNote} onChange={e => setShowNote(e.target.checked)} />備考欄を表示
+        </label>
+        <button type="button" className="kt-link" onClick={fitPeriod} disabled={!items.length}>工期を項目に合わせる</button>
+        <button type="button" className="kt-link" onClick={exportJSON} disabled={!items.length}>データを書き出す</button>
+        <button type="button" className="kt-link" onClick={() => fileRef.current.click()}>データを読み込む</button>
+        <input type="file" accept="application/json" ref={fileRef} onChange={importJSON} style={{ display:"none" }} />
+        <button type="button" className="kt-link danger" onClick={clearAll} disabled={!items.length}>すべて削除</button>
+        <span className="kt-status">{status}</span>
+      </footer>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<KouteiHyou />);
+
+/* 圏外でも開けるようにキャッシュする */
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
