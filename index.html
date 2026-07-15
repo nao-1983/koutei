@@ -21,8 +21,8 @@
   html,body{margin:0;padding:0}
   #root{min-height:100vh}
   .kt{
-    --ink:#4A4A4A; --ink2:#7A7A7A; --paper:#F3F2EC; --line:#D8D8CD; --line2:#EAE9E0;
-    --sat:#EDF1F7; --sun:#F7EDEE; --red:#C8102E; --band:#EDEDEA;
+    --ink:#5C5C5C; --ink2:#8A8A8A; --paper:#F3F2EC; --line:#D8D8CD; --line2:#EAE9E0;
+    --sat:#EDF1F7; --sun:#F7EDEE; --red:#C8102E; --band:#E9E9E6;
     font-family:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
     color:var(--ink); background:var(--paper); min-height:100vh;
     padding:18px 16px calc(40px + env(safe-area-inset-bottom));
@@ -37,7 +37,7 @@
   .kt-sheet{background:var(--paper); padding:2px}
   .kt-head{border-bottom:3px double var(--ink); padding-bottom:12px; margin-bottom:14px; display:flex; gap:20px; align-items:flex-end}
   .kt-headmain{flex:1; min-width:0}
-  .kt-eyebrow{font-size:12px; font-weight:900; letter-spacing:.35em; color:var(--ink2)}
+  .kt-eyebrow{font-size:16px; font-weight:900; letter-spacing:.3em; color:var(--ink2)}
 
   /* 表題欄 */
   .kt-title-block{flex:none; width:270px; border:1.5px solid var(--ink); background:#fff}
@@ -51,7 +51,7 @@
   .kt-tb-val.mono{font-family:'Roboto Mono',monospace; font-weight:500}
 
   .kt-toggles{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
-  .kt-eyebrow span{font-family:'Roboto Mono',monospace; font-weight:500; letter-spacing:.14em; font-size:10px; margin-left:8px; opacity:.65}
+  .kt-eyebrow span{font-family:'Roboto Mono',monospace; font-weight:500; letter-spacing:.14em; font-size:11px; margin-left:8px; opacity:.65}
   .kt-site{display:block; width:100%; margin:4px 0 10px; padding:2px 0; font-size:30px; font-weight:900; letter-spacing:.02em; line-height:1.25; border:0; border-bottom:2px solid var(--ink); background:transparent; color:var(--ink)}
   .kt-site::placeholder{color:#B4B4A8; font-weight:700}
   .kt-period{display:flex; align-items:center; gap:8px; flex-wrap:wrap; font-size:13px; font-weight:700; color:var(--ink2)}
@@ -119,13 +119,13 @@
   .kt-gname-s{flex:1; min-width:0; font-size:15px; font-weight:900; letter-spacing:.04em; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
   .kt-count-badge{font-family:'Roboto Mono',monospace; font-size:10px; color:var(--ink2); flex:none}
   /* 見出しのみ */
-  .kt-grp.style-header .kt-cell-head{background:var(--ink); border-bottom:1px solid var(--ink)}
-  .kt-grp.style-header .kt-gname,.kt-grp.style-header .kt-gname-s{color:#fff}
-  .kt-grp.style-header .kt-caret,.kt-grp.style-header .kt-count-badge{color:#CFCFCF}
-  .kt-grp.style-header .kt-cell-note{background:var(--ink)}
-  .kt-grp.style-header .kt-note{color:#fff}
-  .kt-grp.style-header .kt-note::placeholder{color:#9A9A9A}
-  .kt-grp.style-header .kt-tool{color:#B0B0B0}
+  .kt-grp.style-header .kt-cell-head{background:#DEDEDA; border-top:1px solid #CFCFC9; border-bottom:1px solid #CFCFC9}
+  .kt-grp.style-header .kt-gname,.kt-grp.style-header .kt-gname-s{color:#3F3F3F}
+  .kt-grp.style-header .kt-caret,.kt-grp.style-header .kt-count-badge{color:#7A7A7A}
+  .kt-grp.style-header .kt-cell-note{background:#DEDEDA; border-top:1px solid #CFCFC9; border-bottom:1px solid #CFCFC9}
+  .kt-grp.style-header .kt-note{color:#3F3F3F}
+  .kt-grp.style-header .kt-note::placeholder{color:#A6A6A0}
+  .kt-grp.style-header .kt-tool{color:#9A9A9A}
 
   .kt-sel{border:1px solid var(--line); background:#fff; border-radius:2px; padding:6px 8px; font-size:14px; font-weight:700; color:var(--ink); -webkit-appearance:menulist; appearance:menulist; min-height:36px}
 
