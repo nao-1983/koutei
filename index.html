@@ -51,6 +51,18 @@
   .kt-tb-val.mono{font-family:'Roboto Mono',monospace; font-weight:500}
 
   .kt-toggles{display:flex; gap:14px; flex-wrap:wrap; align-items:center}
+
+  /* 起動時ダイアログ */
+  .kt-modal{position:fixed; inset:0; z-index:50; background:rgba(60,60,58,.5); display:flex; align-items:center; justify-content:center; padding:20px}
+  .kt-modal-box{background:#fff; border:1.5px solid var(--ink); border-radius:4px; max-width:420px; width:100%; padding:22px; box-shadow:0 12px 40px rgba(0,0,0,.25)}
+  .kt-modal-title{font-size:18px; font-weight:900; color:var(--ink); margin-bottom:10px}
+  .kt-modal-body{font-size:14px; line-height:1.7; color:var(--ink); margin-bottom:18px}
+  .kt-modal-btns{display:flex; gap:10px; flex-wrap:wrap}
+  .kt-modal-main{flex:1; min-width:140px; background:var(--ink); color:#fff; border:0; border-radius:2px; padding:13px 16px; font-size:15px; font-weight:700; cursor:pointer; min-height:48px}
+  .kt-modal-main:hover{background:#333}
+  .kt-modal-sub{flex:1; min-width:140px; background:#fff; color:var(--ink); border:1.5px solid var(--ink); border-radius:2px; padding:13px 16px; font-size:15px; font-weight:700; cursor:pointer; min-height:48px}
+  .kt-modal-sub:hover{background:var(--band)}
+  .kt-modal-note{margin-top:14px; font-size:11px; line-height:1.6; color:var(--ink2)}
   .kt-eyebrow span{font-family:'Roboto Mono',monospace; font-weight:500; letter-spacing:.14em; font-size:11px; margin-left:8px; opacity:.65}
   .kt-site{display:block; width:100%; margin:4px 0 10px; padding:2px 0; font-size:30px; font-weight:900; letter-spacing:.02em; line-height:1.25; border:0; border-bottom:2px solid var(--ink); background:transparent; color:var(--ink)}
   .kt-site::placeholder{color:#B4B4A8; font-weight:700}
@@ -81,7 +93,7 @@
   .kt-scroll{overflow-x:auto; -webkit-overflow-scrolling:touch; border:1.5px solid var(--ink); background:#fff; border-radius:3px}
   .kt-grid{position:relative; min-width:100%}
   .kt-row{display:flex; align-items:stretch}
-  .kt-cell-head{position:sticky; left:0; z-index:5; width:var(--head); min-width:var(--head); background:#fff; border-bottom:1px solid var(--line); border-right:1.5px solid var(--ink); display:flex; align-items:center; gap:6px; padding:6px 4px 6px 8px}
+  .kt-cell-head{position:sticky; left:0; z-index:5; width:var(--head); min-width:var(--head); background:#fff; border-bottom:1px solid var(--line); border-right:1.5px solid var(--ink); display:flex; align-items:flex-start; gap:6px; padding:8px 4px 8px 8px}
   .kt-cell-head.has-note{border-right:0}
   .kt-cell-note{position:sticky; left:var(--head); z-index:5; width:var(--notew); min-width:var(--notew); background:#fff; border-left:1px dashed var(--line); border-right:1.5px solid var(--ink); border-bottom:1px solid var(--line); padding:5px; display:flex; align-items:center}
 
@@ -110,13 +122,13 @@
 
   /* 大項目 */
   .kt-grp{min-height:var(--grouph)}
-  .kt-grp .kt-cell-head,.kt-grp .kt-cell-note{background:var(--band); border-bottom:1px solid var(--line)}
+  .kt-grp .kt-cell-head,.kt-grp .kt-cell-note{background:var(--band); border-bottom:1px solid var(--line); align-items:center}
   .kt-grp .kt-tick{background:rgba(22,35,58,.045)}
   .kt-grp .kt-tick.sat{background:rgba(33,95,166,.07)}
   .kt-grp .kt-tick.sun{background:rgba(200,16,46,.06)}
   .kt-caret{border:0; background:transparent; color:var(--ink); font-size:13px; cursor:pointer; padding:4px 2px; flex:none; width:22px; line-height:1}
-  .kt-gname{flex:1; min-width:0; border:0; background:transparent; font-size:16px; font-weight:900; letter-spacing:.04em; color:var(--ink); padding:2px 0}
-  .kt-gname-s{flex:1; min-width:0; font-size:15px; font-weight:900; letter-spacing:.04em; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .kt-gname{flex:1; min-width:0; border:0; background:transparent; font-size:16px; font-weight:900; letter-spacing:.04em; color:var(--ink); padding:2px 0; resize:none; line-height:1.4; overflow:hidden; font-family:inherit}
+  .kt-gname-s{flex:1; min-width:0; font-size:15px; font-weight:900; letter-spacing:.04em; color:var(--ink); line-height:1.4; overflow-wrap:anywhere; white-space:pre-wrap}
   .kt-count-badge{font-family:'Roboto Mono',monospace; font-size:10px; color:var(--ink2); flex:none}
   /* 見出しのみ */
   .kt-grp.style-header .kt-cell-head{background:#DEDEDA; border-top:1px solid #CFCFC9; border-bottom:1px solid #CFCFC9}
@@ -135,8 +147,8 @@
   .kt-item.child .kt-cell-head{padding-left:26px; background:linear-gradient(90deg,var(--ink) 0 2px,#fff 2px)}
   .kt-dot{width:20px; height:20px; border-radius:3px; border:0; cursor:pointer; flex:none; box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)}
   .kt-headinner{flex:1; min-width:0}
-  .kt-itemname{width:100%; border:0; background:transparent; font-size:15px; font-weight:700; color:var(--ink); padding:2px 0}
-  .kt-itemname-s{font-size:14px; font-weight:700; color:var(--ink); line-height:1.5; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+  .kt-itemname{width:100%; border:0; background:transparent; font-size:15px; font-weight:700; color:var(--ink); padding:2px 0; resize:none; line-height:1.4; overflow:hidden; font-family:inherit}
+  .kt-itemname-s{font-size:14px; font-weight:700; color:var(--ink); line-height:1.4; overflow-wrap:anywhere; white-space:pre-wrap}
   .kt-itemdates{display:flex; flex-direction:var(--datedir); gap:4px; margin-top:3px}
   .kt-itemdates input{font-size:var(--datefs); padding:3px 5px; width:var(--datew); min-height:0; border-color:var(--line2); color:var(--ink2)}
 
@@ -147,9 +159,9 @@
   .kt-tool.del:hover{color:var(--red)}
   .kt-tool:disabled{opacity:.25; cursor:default}
 
-  .kt-note{width:100%; border:0; background:transparent; resize:none; font-size:var(--notefs); line-height:1.5; color:var(--ink2); padding:2px; overflow:auto}
+  .kt-note{width:100%; border:0; background:transparent; resize:none; font-size:var(--notefs); line-height:1.5; color:var(--ink2); padding:2px; overflow:hidden; font-family:inherit; overflow-wrap:anywhere}
   .kt-note::placeholder{color:#C8C8BC}
-  .kt-note-s{font-size:10px; line-height:1.5; color:var(--ink); word-break:break-all}
+  .kt-note-s{font-size:10px; line-height:1.5; color:var(--ink); overflow-wrap:anywhere; white-space:pre-wrap}
 
   .kt-bar{position:absolute; top:50%; transform:translateY(-50%); height:var(--pbarh); border-radius:2px; z-index:2; display:flex; align-items:center; justify-content:flex-end; padding-right:5px; box-shadow:0 1px 0 rgba(0,0,0,.18)}
   .kt-bar span{font-family:'Roboto Mono',monospace; font-size:9px; font-weight:700; color:#fff; opacity:.9; white-space:nowrap}
@@ -242,6 +254,24 @@ const loadScript = src => new Promise((res, rej) => {
   document.head.appendChild(s);
 });
 
+/* 内容に応じて高さが伸びる1〜複数行のテキスト入力 */
+function AutoText(props) {
+  const ref = useRef(null);
+  const fit = () => { const el = ref.current; if (el) { el.style.height = "auto"; el.style.height = el.scrollHeight + "px"; } };
+  useEffect(fit, [props.value]);
+  return (
+    <textarea
+      ref={ref}
+      className={props.className}
+      value={props.value}
+      placeholder={props.placeholder}
+      rows="1"
+      onInput={fit}
+      onChange={props.onChange}
+    />
+  );
+}
+
 /* 行データ:kind = "group"(大項目) または "task"(詳細項目)。
    task は、すぐ上にある group に属する。 */
 function KouteiHyou() {
@@ -259,27 +289,50 @@ function KouteiHyou() {
   const [busy, setBusy] = useState("");
   const [printing, setPrinting] = useState(false);
   const [pv, setPv] = useState({});   /* PDF用に自動計算した行高・列幅 */
+  const [resume, setResume] = useState(null); /* 前回データの確認ダイアログ用 */
   const sheetRef = useRef(null);
   const loaded = useRef(false);
   const fileRef = useRef(null);
 
+  const applySnapshot = s => {
+    setSite(s.site || "");
+    setStart(s.start || defaultStart);
+    setEnd(s.end || defaultEnd);
+    if (s.rows) setRows(s.rows);
+    else if (s.items) setRows(s.items.map(it => Object.assign({ kind:"task", note:"" }, it)));
+    else setRows([]);
+    if (typeof s.showNote === "boolean") setShowNote(s.showNote);
+    if (s.meta) setMeta(Object.assign({ date: today, author:"", company:"" }, s.meta));
+    if (s.show) setShow(Object.assign({ date:true, author:true, company:true }, s.show));
+    if (s.range) setRange(Object.assign({ mode:"auto", week:"", month:"", from:"", to:"" }, s.range));
+  };
+
+  /* 前回データを引き継ぐ */
+  const chooseResume = () => {
+    if (resume) applySnapshot(resume);
+    setResume(null);
+    loaded.current = true;
+  };
+  /* 新規で始める(前回データはこの時点では消さない。何か入力・保存された時点で上書きされる) */
+  const chooseNew = () => {
+    setResume(null);
+    loaded.current = true;
+  };
+
   useEffect(() => {
+    let hasData = false;
     try {
       const raw = localStorage.getItem(KEY);
       if (raw) {
         const s = JSON.parse(raw);
-        setSite(s.site || "");
-        setStart(s.start || defaultStart);
-        setEnd(s.end || defaultEnd);
-        if (s.rows) setRows(s.rows);
-        else if (s.items) /* 旧データを詳細項目として引き継ぐ */
-          setRows(s.items.map(it => Object.assign({ kind:"task", note:"" }, it)));
-        if (typeof s.showNote === "boolean") setShowNote(s.showNote);
-        if (s.meta) setMeta(Object.assign({ date: today, author:"", company:"" }, s.meta));
-        if (s.show) setShow(Object.assign({ date:true, author:true, company:true }, s.show));
+        const rowCount = (s.rows && s.rows.length) || (s.items && s.items.length) || 0;
+        if (rowCount > 0 || (s.site && s.site.trim())) {
+          setResume(s);       /* 中身のある前回データ → 確認ダイアログを出す */
+          hasData = true;
+        }
       }
     } catch (e) {}
-    loaded.current = true;
+    if (!hasData) loaded.current = true;  /* データが無ければそのまま新規開始 */
     const t = setTimeout(() => {
       if (navigator.onLine) { loadScript(H2C).catch(()=>{}); loadScript(JSPDF).catch(()=>{}); }
     }, 3000);
@@ -467,6 +520,13 @@ function KouteiHyou() {
     setRows([]);
   };
 
+  const newSheet = () => {
+    if ((rows.length || site.trim()) && !window.confirm("入力内容をすべて消して、新しい工程表を作成します。よろしいですか。(残したい場合は先に「データを書き出す」で保存してください)")) return;
+    setSite(""); setStart(defaultStart); setEnd(defaultEnd); setRows([]);
+    setMeta({ date: today, author:"", company:"" });
+    setRange({ mode:"auto", week:"", month:"", from:"", to:"" });
+  };
+
   const exportJSON = () => {
     const blob = new Blob([JSON.stringify({ site, start, end, rows, showNote, meta, show, range }, null, 2)], { type:"application/json" });
     const a = document.createElement("a");
@@ -561,6 +621,23 @@ function KouteiHyou() {
       "--prowh": (pv.rowh ? Math.round(pv.rowh) : 42) + "px",
       "--pgrouph": (pv.rowh ? Math.round(pv.rowh * 0.8) : 38) + "px",
     })}>
+      {resume && (
+        <div className="kt-modal">
+          <div className="kt-modal-box">
+            <div className="kt-modal-title">前回の作業データがあります</div>
+            <div className="kt-modal-body">
+              {(resume.site && resume.site.trim()) ? "現場「" + resume.site.trim() + "」" : "保存された工程表"}
+              {" ("}{(resume.rows ? resume.rows.filter(r => r.kind !== "group").length : (resume.items ? resume.items.length : 0))}{" 件)"}<br />
+              続きから編集しますか?それとも新しく作り直しますか?
+            </div>
+            <div className="kt-modal-btns">
+              <button type="button" className="kt-modal-main" onClick={chooseResume}>続きから編集</button>
+              <button type="button" className="kt-modal-sub" onClick={chooseNew}>新規で作成</button>
+            </div>
+            <div className="kt-modal-note">「新規で作成」を選んでも、何か入力するまで前回データは残っています。念のため残したい工程表は「データを書き出す」でファイル保存しておくと安全です。</div>
+          </div>
+        </div>
+      )}
       <div className="kt-add">
         <div className="kt-kind">
           <button type="button" className={kind === "group" ? "on" : ""} onClick={() => setKind("group")}>大項目</button>
@@ -698,7 +775,7 @@ function KouteiHyou() {
                         )}
                         {printing
                           ? <div className="kt-gname-s">{r.name}</div>
-                          : <input className="kt-gname" value={r.name} onChange={e => patch(r.id, "name", e.target.value)} />}
+                          : <AutoText className="kt-gname" value={r.name} onChange={e => patch(r.id, "name", e.target.value)} />}
                         {sm && sm.n > 0 && <span className="kt-count-badge">{sm.n}</span>}
                       </React.Fragment>
                     ) : (
@@ -711,7 +788,7 @@ function KouteiHyou() {
                             <div className="kt-itemname-s">{r.name}</div>
                           ) : (
                             <React.Fragment>
-                              <input className="kt-itemname" value={r.name} onChange={e => patch(r.id, "name", e.target.value)} />
+                              <AutoText className="kt-itemname" value={r.name} onChange={e => patch(r.id, "name", e.target.value)} />
                               <div className="kt-itemdates">
                                 <input type="date" value={r.start} onChange={e => patch(r.id, "start", e.target.value)} />
                                 <input type="date" value={r.end} onChange={e => patch(r.id, "end", e.target.value)} />
@@ -735,7 +812,7 @@ function KouteiHyou() {
                     <div className="kt-cell-note">
                       {printing
                         ? <div className="kt-note-s">{r.note || ""}</div>
-                        : <textarea className="kt-note" rows="2" placeholder="備考" value={r.note || ""}
+                        : <AutoText className="kt-note" placeholder="備考" value={r.note || ""}
                             onChange={e => patch(r.id, "note", e.target.value)} />}
                     </div>
                   )}
@@ -820,6 +897,7 @@ function KouteiHyou() {
         <button type="button" className="kt-link" onClick={exportJSON} disabled={!rows.length}>データを書き出す</button>
         <button type="button" className="kt-link" onClick={() => fileRef.current.click()}>データを読み込む</button>
         <input type="file" accept="application/json" ref={fileRef} onChange={importJSON} style={{ display:"none" }} />
+        <button type="button" className="kt-link" onClick={newSheet}>新規作成</button>
         <button type="button" className="kt-link danger" onClick={clearAll} disabled={!rows.length}>すべて削除</button>
         <span className="kt-status">{status}</span>
       </footer>
